@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏝️ 民法物權探索島：所有權的物權特性｜互動立體教材</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(180deg, #e0f2fe 0%, #f0fdf4 45%, #fefce8 100%);
+      overflow-x: hidden;
+    }
+    /* 3D 漂浮島嶼動畫 */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes floatDelayed {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 8px 16px rgba(14, 165, 233, 0.25)); }
+      50% { filter: drop-shadow(0 12px 24px rgba(14, 165, 233, 0.55)); }
+    }
+    .island-float-1 { animation: floatSlow 4.5s ease-in-out infinite; }
+    .island-float-2 { animation: floatDelayed 5.2s ease-in-out 0.8s infinite; }
+    .island-float-3 { animation: floatSlow 4.8s ease-in-out 1.5s infinite; }
+    .island-node {
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .island-node:hover {
+      transform: scale(1.06) translateY(-6px);
+      filter: drop-shadow(0 16px 25px rgba(15, 23, 42, 0.22));
+    }
+    .active-island-ring {
+      stroke: #f59e0b;
+      stroke-width: 4;
+      stroke-dasharray: 8 4;
+    }
+    /* 翻轉卡片特效 */
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+
+    /* 自訂捲軸 */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+    /* 邏輯電路動畫線 */
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -24; }
+    }
+    .circuit-active {
+      stroke-dasharray: 8 4;
+      animation: dashFlow 0.8s linear infinite;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-amber-200 selection:text-slate-900">
+
+  <!-- 頂部固定導覽列 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/90 border-b border-sky-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <!-- 網站標題 -->
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-500 flex items-center justify-center text-white text-2xl shadow-md">
+            🏝️
+          </div>
+          <div>
+            <span class="text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">公民與社會 2｜第5章第2節 (P.109-115)</span>
+            <h1 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">民法物權探索島：所有權的物權特性</h1>
+          </div>
+        </div>
+
+        <!-- 進度條與師生模式切換 -->
+        <div class="flex flex-wrap items-center gap-4">
+          <!-- 學習進度條 -->
+          <div class="bg-slate-100 px-3.5 py-2 rounded-2xl border border-slate-200 flex items-center gap-3 min-w-[200px]">
+            <div class="text-xs font-bold text-slate-600 whitespace-nowrap">探索進度</div>
+            <div class="w-28 bg-slate-200 h-3 rounded-full overflow-hidden">
+              <div id="globalProgressBar" class="bg-gradient-to-r from-emerald-500 to-sky-500 h-full transition-all duration-500" style="width: 15%;"></div>
+            </div>
+            <span id="globalProgressText" class="text-xs font-black text-emerald-700">15%</span>
+          </div>
+
+          <!-- 模式切換開關 -->
+          <div class="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200">
+            <button id="btnStudentMode" onclick="setRoleMode('student')" class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-sky-600 text-white shadow">
+              🧑‍🎓 學生探索模式
+            </button>
+            <button id="btnTeacherMode" onclick="setRoleMode('teacher')" class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-slate-600 hover:text-slate-900">
+              👨‍🏫 教師引導模式
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 快速跳轉選單 -->
+      <nav class="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto pb-1 text-xs sm:text-sm font-bold">
+        <button onclick="scrollToSection('archipelago-map')" class="px-3 py-1.5 rounded-xl bg-sky-50 text-sky-800 hover:bg-sky-100 whitespace-nowrap transition">🗺️ 立體知識島全圖</button>
+        <button onclick="selectIsland(1)" id="nav-island-1" class="px-3 py-1.5 rounded-xl hover:bg-emerald-50 text-slate-700 whitespace-nowrap transition">🌱 1. 財產權與物</button>
+        <button onclick="selectIsland(2)" id="nav-island-2" class="px-3 py-1.5 rounded-xl hover:bg-amber-50 text-slate-700 whitespace-nowrap transition">⚡ 2. 四大特性與一物二賣</button>
+        <button onclick="selectIsland(3)" id="nav-island-3" class="px-3 py-1.5 rounded-xl hover:bg-rose-50 text-slate-700 whitespace-nowrap transition">🛡️ 3. 民法767防衛堡壘</button>
+        <button onclick="selectIsland(4)" id="nav-island-4" class="px-3 py-1.5 rounded-xl hover:bg-indigo-50 text-slate-700 whitespace-nowrap transition">⚖️ 4. 限制與移轉法則</button>
+        <button onclick="selectIsland(5)" id="nav-island-5" class="px-3 py-1.5 rounded-xl hover:bg-purple-50 text-slate-700 whitespace-nowrap transition">🤝 5. 公益調和與開源</button>
+        <span class="text-slate-300">|</span>
+        <button onclick="scrollToSection('video-hall')" class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 whitespace-nowrap transition">🎬 影音活化館</button>
+        <button onclick="scrollToSection('voting-station')" class="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-800 hover:bg-amber-100 whitespace-nowrap transition">📊 師生投票所</button>
+        <button onclick="scrollToSection('mission-arena')" class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 whitespace-nowrap transition">🎯 學習任務闖關</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 教師模式全局提示橫幅（預設隱藏，切換至教師模式時顯示） -->
+  <div id="teacherGlobalBanner" class="hidden bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">👨‍🏫</span>
+        <div>
+          <p class="font-black text-sm sm:text-base">教師教學引導模式已啟動（50分鐘一節課完整教案配置）</p>
+          <p class="text-xs text-amber-100">各島嶼已展開「教學目標、破冰提問、時間分配、迷思概念澄清與黑板板書公式」，可直接用於課堂投影教學！</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="unlockAllProgress()" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-xs font-bold backdrop-blur-sm transition">
+          🔓 一鍵解鎖全島進度與詳解
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主視覺區：3D 等距立體知識群島地圖 (Isometric Knowledge Archipelago) -->
+  <section id="archipelago-map" class="relative pt-6 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="text-center max-w-3xl mx-auto mb-6">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 border border-sky-200 shadow-sm text-sky-800 text-xs sm:text-sm font-bold mb-3">
+        <span>🧭 核心問題引導</span>
+        <span class="text-slate-400">•</span>
+        <span>什麼是所有權？所有權有何特性？法律如何保障與限制所有權？</span>
+      </div>
+      <h2 class="text-2xl sm:text-4xl font-black text-slate-900 leading-tight">
+        點擊立體知識島，展開民法物權的互動旅程！
+      </h2>
+      <p class="text-slate-600 text-sm sm:text-base mt-2">
+        財產權保障人民可依據財產的狀態，自由<strong>使用、收益及處分</strong>的權利，確保個人生存及自由發展人格之生活資源。
+      </p>
+    </div>
+
+    <!-- 互動式 3D 立體漂浮島嶼 SVG 畫布 -->
+    <div class="relative bg-gradient-to-b from-sky-200/70 via-cyan-100/60 to-emerald-100/60 rounded-3xl border-2 border-white shadow-xl overflow-hidden p-2 sm:p-6">
+      <!-- 圖例與操作提示 -->
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2 px-3 py-2 bg-white/80 backdrop-blur rounded-2xl text-xs font-bold text-slate-700">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
+          <span>點擊下方任一「立體島嶼」即可載入該節課本教材、法理公式圖與互動模擬器</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="currentIslandBadge" class="px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-black">📍 目前所在：第一島（財產權與物之起源）</span>
+        </div>
+      </div>
+
+      <div class="w-full overflow-x-auto">
+        <svg viewBox="0 0 1100 470" class="w-full min-w-[780px] h-auto select-none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- 島嶼陰影與漸層 -->
+            <filter id="islandShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="14" stdDeviation="10" flood-color="#0284c7" flood-opacity="0.22"/>
+            </filter>
+            <linearGradient id="waterBridge" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
+              <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.8"/>
+            </linearGradient>
+          </defs>
+
+          <!-- 背景雲朵與海域波紋 -->
+          <g opacity="0.55">
+            <ellipse cx="180" cy="70" rx="65" ry="22" fill="#ffffff"/>
+            <ellipse cx="220" cy="65" rx="45" ry="18" fill="#ffffff"/>
+            <ellipse cx="880" cy="60" rx="75" ry="24" fill="#ffffff"/>
+            <ellipse cx="930" cy="55" rx="50" ry="18" fill="#ffffff"/>
+            <ellipse cx="550" cy="430" rx="420" ry="25" fill="#bae6fd"/>
+          </g>
+
+          <!-- 島嶼間的航線虛線 -->
+          <path d="M 190 250 Q 310 150 410 180 T 630 260 T 830 175 T 930 330" fill="none" stroke="url(#waterBridge)" stroke-width="5" stroke-dasharray="10 8" class="circuit-active"/>
+
+          <!-- ================= 島嶼 1：財產權與「物」之起源島 (P.109-110) ================= -->
+          <g onclick="selectIsland(1)" class="island-node island-float-1" filter="url(#islandShadow)">
+            <!-- 底部岩石層 -->
+            <polygon points="70,260 190,320 310,260 280,350 190,395 100,350" fill="#78716c"/>
+            <polygon points="70,260 190,320 190,395 100,350" fill="#57534e"/>
+            <!-- 中層泥土 -->
+            <polygon points="65,245 190,305 315,245 310,265 190,325 70,265" fill="#b45309"/>
+            <!-- 頂部草地平台 (Isometric Diamond) -->
+            <polygon id="map-ring-1" points="190,185 315,245 190,305 65,245" fill="#22c55e" class="active-island-ring"/>
+            <!-- 島上建築：古羅馬神殿柱 + 動產/不動產房屋與河川 -->
+            <!-- 河川水波 -->
+            <path d="M 140 245 Q 190 265 245 250" stroke="#38bdf8" stroke-width="10" fill="none" stroke-linecap="round"/>
+            <!-- 房屋(不動產) -->
+            <rect x="135" y="195" width="42" height="34" rx="4" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+            <polygon points="130,197 156,172 182,197" fill="#ef4444"/>
+            <!-- 羅馬柱(私有財產神聖) -->
+            <rect x="200" y="185" width="32" height="42" rx="3" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+            <polygon points="195,185 216,168 237,185" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+            <!-- 島嶼資訊牌 -->
+            <rect x="95" y="335" width="190" height="54" rx="14" fill="#ffffff" stroke="#16a34a" stroke-width="3"/>
+            <text x="190" y="357" text-anchor="middle" font-size="14" font-weight="900" fill="#15803d">第一島｜P.109-110</text>
+            <text x="190" y="378" text-anchor="middle" font-size="15" font-weight="900" fill="#0f172a">🌱 財產權與「物」之起源</text>
+          </g>
+
+          <!-- ================= 島嶼 2：所有權四大特性雷達島 (P.111-112) ================= -->
+          <g onclick="selectIsland(2)" class="island-node island-float-2" filter="url(#islandShadow)">
+            <polygon points="310,165 420,220 530,165 500,245 420,285 340,245" fill="#64748b"/>
+            <polygon points="305,150 420,205 535,150 530,170 420,225 310,170" fill="#d97706"/>
+            <polygon id="map-ring-2" points="420,95 535,150 420,205 305,150" fill="#facc15"/>
+            <!-- 島上視覺：小辰的筆電與所有權王冠 -->
+            <rect x="385" y="102" width="70" height="46" rx="6" fill="#1e293b" stroke="#f8fafc" stroke-width="3"/>
+            <rect x="392" y="108" width="56" height="34" fill="#38bdf8"/>
+            <text x="420" y="130" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">所有權</text>
+            <polygon points="370,148 470,148 482,162 358,162" fill="#94a3b8" stroke="#475569" stroke-width="2"/>
+            <!-- 閃電標誌 -->
+            <circle cx="475" cy="100" r="16" fill="#f97316"/>
+            <text x="475" y="106" text-anchor="middle" font-size="16">⚡</text>
+            <!-- 島嶼資訊牌 -->
+            <rect x="325" y="232" width="190" height="54" rx="14" fill="#ffffff" stroke="#eab308" stroke-width="3"/>
+            <text x="420" y="254" text-anchor="middle" font-size="14" font-weight="900" fill="#b45309">第二島｜P.111-112</text>
+            <text x="420" y="275" text-anchor="middle" font-size="15" font-weight="900" fill="#0f172a">⚡ 四大特性與一物二賣</text>
+          </g>
+
+          <!-- ================= 島嶼 3：民法第767條防衛堡壘島 (P.113) ================= -->
+          <g onclick="selectIsland(3)" class="island-node island-float-3" filter="url(#islandShadow)">
+            <polygon points="520,285 630,340 740,285 710,365 630,405 550,365" fill="#475569"/>
+            <polygon points="515,270 630,325 745,270 740,290 630,345 520,290" fill="#e11d48"/>
+            <polygon id="map-ring-3" points="630,215 745,270 630,325 515,270" fill="#fb7185"/>
+            <!-- 島上視覺：767 防衛盾牌與城堡 -->
+            <path d="M 630 185 L 670 202 L 670 238 C 670 265 630 282 630 282 C 630 282 590 265 590 238 L 590 202 Z" fill="#fff1f2" stroke="#be123c" stroke-width="4"/>
+            <text x="630" y="232" text-anchor="middle" font-size="13" font-weight="900" fill="#be123c">民法</text>
+            <text x="630" y="252" text-anchor="middle" font-size="17" font-weight="900" fill="#881337">§767</text>
+            <!-- 島嶼資訊牌 -->
+            <rect x="535" y="350" width="190" height="54" rx="14" fill="#ffffff" stroke="#e11d48" stroke-width="3"/>
+            <text x="630" y="372" text-anchor="middle" font-size="14" font-weight="900" fill="#be123c">第三島｜P.113</text>
+            <text x="630" y="393" text-anchor="middle" font-size="15" font-weight="900" fill="#0f172a">🛡️ 民法767防衛堡壘</text>
+          </g>
+
+          <!-- ================= 島嶼 4：所有權限制與移轉法則島 (P.114) ================= -->
+          <g onclick="selectIsland(4)" class="island-node island-float-1" filter="url(#islandShadow)">
+            <polygon points="705,165 815,220 925,165 895,245 815,285 735,245" fill="#4f46e5"/>
+            <polygon points="700,150 815,205 930,150 925,170 815,225 705,170" fill="#6366f1"/>
+            <polygon id="map-ring-4" points="815,95 930,150 815,205 700,150" fill="#a5b4fc"/>
+            <!-- 島上視覺：地政事務所與契約天平 -->
+            <rect x="780" y="102" width="70" height="50" rx="6" fill="#ffffff" stroke="#3730a3" stroke-width="3"/>
+            <rect x="790" y="88" width="50" height="18" rx="4" fill="#4338ca"/>
+            <text x="815" y="101" text-anchor="middle" font-size="10" font-weight="900" fill="#ffffff">地政登記</text>
+            <text x="815" y="135" text-anchor="middle" font-size="22">⚖️</text>
+            <!-- 島嶼資訊牌 -->
+            <rect x="720" y="232" width="190" height="54" rx="14" fill="#ffffff" stroke="#4f46e5" stroke-width="3"/>
+            <text x="815" y="254" text-anchor="middle" font-size="14" font-weight="900" fill="#4338ca">第四島｜P.114</text>
+            <text x="815" y="275" text-anchor="middle" font-size="15" font-weight="900" fill="#0f172a">⚖️ 限制與移轉法則</text>
+          </g>
+
+          <!-- ================= 島嶼 5：公共利益調和與開放原始碼未來島 (P.115) ================= -->
+          <g onclick="selectIsland(5)" class="island-node island-float-2" filter="url(#islandShadow)">
+            <polygon points="845,315 955,370 1065,315 1035,390 955,430 875,390" fill="#581c87"/>
+            <polygon points="840,300 955,355 1070,300 1065,320 955,375 845,320" fill="#9333ea"/>
+            <polygon id="map-ring-5" points="955,245 1070,300 955,355 840,300" fill="#d8b4fe"/>
+            <!-- 島上視覺：台灣騎樓建築 + 開放原始碼圖示 -->
+            <rect x="915" y="242" width="80" height="52" rx="6" fill="#faf5ff" stroke="#6b21a8" stroke-width="3"/>
+            <path d="M 925 294 L 925 272 L 948 272 L 948 294" fill="#fde047" stroke="#6b21a8" stroke-width="2"/>
+            <text x="970" y="272" text-anchor="middle" font-size="13" font-weight="900" fill="#6b21a8">&lt;/&gt;</text>
+            <text x="955" y="258" text-anchor="middle" font-size="11" font-weight="900" fill="#581c87">騎樓 × 開源</text>
+            <!-- 島嶼資訊牌 -->
+            <rect x="860" y="382" width="190" height="54" rx="14" fill="#ffffff" stroke="#9333ea" stroke-width="3"/>
+            <text x="955" y="404" text-anchor="middle" font-size="14" font-weight="900" fill="#7e22ce">第五島｜P.115</text>
+            <text x="955" y="425" text-anchor="middle" font-size="15" font-weight="900" fill="#0f172a">🤝 公共利益與開放原始碼</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- 島嶼切換快捷列 -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mt-3">
+        <button onclick="selectIsland(1)" id="card-btn-1" class="p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-50/90 text-left transition hover:shadow-md">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-emerald-800 bg-emerald-200/80 px-2 py-0.5 rounded-full">P.109-110</span>
+            <span id="check-island-1" class="text-emerald-600 font-bold text-sm">● 探索中</span>
+          </div>
+          <div class="font-black text-slate-900 text-sm mt-1">🌱 1. 財產權與物之起源</div>
+        </button>
+
+        <button onclick="selectIsland(2)" id="card-btn-2" class="p-3 rounded-2xl border-2 border-white bg-white/80 text-left transition hover:shadow-md">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">P.111-112</span>
+            <span id="check-island-2" class="text-slate-400 font-bold text-sm">○ 待探索</span>
+          </div>
+          <div class="font-black text-slate-900 text-sm mt-1">⚡ 2. 四大特性與優先性</div>
+        </button>
+
+        <button onclick="selectIsland(3)" id="card-btn-3" class="p-3 rounded-2xl border-2 border-white bg-white/80 text-left transition hover:shadow-md">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-rose-800 bg-rose-100 px-2 py-0.5 rounded-full">P.113</span>
+            <span id="check-island-3" class="text-slate-400 font-bold text-sm">○ 待探索</span>
+          </div>
+          <div class="font-black text-slate-900 text-sm mt-1">🛡️ 3. 民法第767條保障</div>
+        </button>
+
+        <button onclick="selectIsland(4)" id="card-btn-4" class="p-3 rounded-2xl border-2 border-white bg-white/80 text-left transition hover:shadow-md">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded-full">P.114</span>
+            <span id="check-island-4" class="text-slate-400 font-bold text-sm">○ 待探索</span>
+          </div>
+          <div class="font-black text-slate-900 text-sm mt-1">⚖️ 4. 所有權限制與移轉</div>
+        </button>
+
+        <button onclick="selectIsland(5)" id="card-btn-5" class="col-span-2 sm:col-span-1 p-3 rounded-2xl border-2 border-white bg-white/80 text-left transition hover:shadow-md">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-purple-800 bg-purple-100 px-2 py-0.5 rounded-full">P.115</span>
+            <span id="check-island-5" class="text-slate-400 font-bold text-sm">○ 待探索</span>
+          </div>
+          <div class="font-black text-slate-900 text-sm mt-1">🤝 5. 公益調和與智財權</div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       五大知識島深度互動教材區
+  ====================================================================== -->
+  <main id="island-content-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+
+    <!-- =================================================================
+         第一島：🌱 財產權與「物」之起源島 (PDF P.109-110)
+    ================================================================== -->
+    <article id="island-panel-1" class="island-panel bg-white rounded-3xl shadow-xl border border-emerald-200 overflow-hidden">
+      <!-- 島嶼標題橫幅 -->
+      <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 text-white p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-black tracking-wider uppercase">第一島｜課本 P.109 - P.110</span>
+            <h3 class="text-2xl sm:text-3xl font-black mt-2">🌱 財產權的歷史演進、民法「物」與外部性治理</h3>
+            <p class="text-emerald-100 text-sm sm:text-base mt-1">從古羅馬「私有財產神聖不可侵犯」到現代市場經濟與養豬場廢水治理案例</p>
+          </div>
+          <div class="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-right">
+            <div class="text-xs text-emerald-100">本島核心法條</div>
+            <div class="text-lg font-black">我國《憲法》第 15 條</div>
+            <div class="text-xs text-emerald-100">人民之財產權，應予保障</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-8">
+        <!-- 教師專屬引導錦囊 (教師模式顯示) -->
+        <div class="teacher-only-box hidden bg-amber-50 border-2 border-amber-400 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-200 pb-3 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-amber-500 text-white text-xs font-black">👨‍🏫 教師教學活動設計</span>
+              <h4 class="font-black text-amber-950 text-base">第一島教學策略：從隨身物品認識「權利主體 vs 權利客體」</h4>
+            </div>
+            <span class="text-xs font-bold text-amber-800 bg-amber-200/70 px-3 py-1 rounded-full">⏱️ 建議時間：10 分鐘</span>
+          </div>
+          <div class="grid md:grid-cols-3 gap-4 text-sm text-amber-950">
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">💡 破冰提問（2分鐘）</div>
+              <p>請學生拿起桌上的「手機」與家裡的「毛小孩（寵物）」照片，提問：「在民法眼中，你的愛犬是『人（權利主體）』還是『物（權利客體）』？屬於動產還是不動產？」</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">🔍 跨科連結（經濟學外部性）</div>
+              <p>搭配 P.110 圖5-2-1「養豬場排放廢水」，引導學生思考：為何無主物會發生「公地悲劇」？社會契約論如何解釋政府管理河川的正當性？</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">📝 板書核心公式</div>
+              <p class="font-mono text-xs bg-amber-50 p-2 rounded border border-amber-200 mt-1">
+                民法 = 人(主體) 支配 物(客體)<br>
+                物 = 不動產(土地+定著物) + 動產(含寵物)<br>
+                精神產物 = 專利權、著作權
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 區塊 1：歷史演進與民法基本架構 + 小辭典 -->
+        <div class="grid lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-7 space-y-5">
+            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+              <h4 class="text-lg font-black text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm">1</span>
+                私有財產權的歷史演進（P.109）
+              </h4>
+              <div class="mt-4 grid sm:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-xl border-l-4 border-amber-500 shadow-sm">
+                  <div class="text-xs font-black text-amber-700 uppercase">古羅馬時期</div>
+                  <div class="font-black text-slate-900 text-base mt-0.5">「私有財產神聖不可侵犯」原則</div>
+                  <p class="text-xs sm:text-sm text-slate-600 mt-1">奠定維護私有財產權的法理基礎，強調個人對私有財產的支配。</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border-l-4 border-sky-500 shadow-sm">
+                  <div class="text-xs font-black text-sky-700 uppercase">工業革命之後</div>
+                  <div class="font-black text-slate-900 text-base mt-0.5">勤奮工作動力 × 資源有效運作</div>
+                  <p class="text-xs sm:text-sm text-slate-600 mt-1">工人領取薪資以維持生活條件，私有財產權保障成為人們勤奮工作的動力之一，並促使資源運作更有效率。</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+              <h4 class="text-lg font-black text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm">2</span>
+                民法的權利主體、權利客體與物權定義（P.109-110）
+              </h4>
+              <ul class="mt-3 space-y-2.5 text-sm sm:text-base text-slate-700">
+                <li class="flex items-start gap-2.5">
+                  <span class="text-emerald-600 font-black mt-0.5">●</span>
+                  <span><strong>權利主體 vs 權利客體</strong>：民法以<strong>「人」</strong>為權利主體、以<strong>「物」</strong>為權利客體。權利客體是指受權利主體支配之各項權利的對象或內容，不僅包括有形的<strong>「物」</strong>，也包括<strong>專利權、著作權等精神產物</strong>。</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <span class="text-emerald-600 font-black mt-0.5">●</span>
+                  <span><strong>物權（Real Right）</strong>：指權利主體對物<strong>直接支配、享受其利益，並具有排他性</strong>的權利，而「所有權」為物權的一種。</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <span class="text-emerald-600 font-black mt-0.5">●</span>
+                  <span><strong>所有權（Ownership）</strong>：指所有權人可以自由地<strong>使用、收益、處分</strong>所有物，並且<strong>排除他人干涉</strong>的權利。</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 右側：課本小辭典「物」+ 視覺化架構 SVG 圖卡 -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-5 border-2 border-emerald-300 shadow-sm">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-emerald-700 text-white text-xs font-black">📖 課本小辭典（P.109）</span>
+                <span class="text-xs font-bold text-emerald-800">民法上的「物」</span>
+              </div>
+              <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                民法上的「物」區分為<strong>不動產</strong>及<strong>動產</strong>：
+              </p>
+              <!-- 視覺化 SVG 公式圖：物的分類與權利關係 -->
+              <div class="bg-white rounded-xl p-3 border border-emerald-200">
+                <svg viewBox="0 0 420 220" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                  <!-- 頂層：權利主體支配權利客體 -->
+                  <rect x="15" y="12" width="115" height="44" rx="10" fill="#0284c7"/>
+                  <text x="72" y="32" text-anchor="middle" font-size="12" font-weight="900" fill="#ffffff">權利主體：人</text>
+                  <text x="72" y="48" text-anchor="middle" font-size="10" fill="#e0f2fe">(自然人 / 法人)</text>
+
+                  <path d="M 135 34 L 205 34" stroke="#0f172a" stroke-width="3" marker-end="url(#arrow)"/>
+                  <text x="170" y="26" text-anchor="middle" font-size="10" font-weight="900" fill="#0f172a">直接支配</text>
+
+                  <rect x="210" y="12" width="195" height="44" rx="10" fill="#059669"/>
+                  <text x="307" y="32" text-anchor="middle" font-size="12" font-weight="900" fill="#ffffff">權利客體：物 ＆ 精神產物</text>
+                  <text x="307" y="48" text-anchor="middle" font-size="10" fill="#d1fae5">(有形之物 + 專利權/著作權)</text>
+
+                  <!-- 分支線 -->
+                  <path d="M 307 56 L 307 78 L 115 78 L 115 95" fill="none" stroke="#059669" stroke-width="2.5"/>
+                  <path d="M 307 56 L 307 78 L 310 78 L 310 95" fill="none" stroke="#059669" stroke-width="2.5"/>
+
+                  <!-- 不動產框 -->
+                  <rect x="15" y="95" width="190" height="112" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+                  <text x="110" y="118" text-anchor="middle" font-size="13" font-weight="900" fill="#b45309">🏠 不動產 (Immovables)</text>
+                  <text x="110" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#78350f">土地 ＋ 土地上之定著物</text>
+                  <text x="110" y="162" text-anchor="middle" font-size="11" fill="#92400e">例：土地、房屋、大樓</text>
+                  <rect x="30" y="172" width="160" height="24" rx="6" fill="#fde68a"/>
+                  <text x="110" y="188" text-anchor="middle" font-size="10" font-weight="900" fill="#92400e">移轉要件：地政機關「登記」</text>
+
+                  <!-- 動產框 -->
+                  <rect x="218" y="95" width="190" height="112" rx="12" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+                  <text x="313" y="118" text-anchor="middle" font-size="13" font-weight="900" fill="#0369a1">📱 動產 (Movables)</text>
+                  <text x="313" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#0c4a6e">不動產以外的一切物品</text>
+                  <text x="313" y="162" text-anchor="middle" font-size="11" fill="#075985">例：手機、衣服、汽機車、🐕寵物</text>
+                  <rect x="233" y="172" width="160" height="24" rx="6" fill="#bae6fd"/>
+                  <text x="313" y="188" text-anchor="middle" font-size="10" font-weight="900" fill="#075985">移轉要件：占有移轉「交付」</text>
+                </svg>
+              </div>
+              <p class="text-xs text-emerald-900 mt-3 bg-emerald-100/80 p-2.5 rounded-xl font-bold">
+                🐾 法律冷知識：從現行民法觀點，<strong>寵物也是「物」，屬於「動產」的一種</strong>！（但同時受《動物保護法》特別規範保護）
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 區塊 2：國家為何保障所有權 & 圖5-2-1 養豬場排放廢水案例 (P.110) -->
+        <div class="grid lg:grid-cols-12 gap-6 items-center bg-gradient-to-r from-sky-50 to-emerald-50 p-6 rounded-3xl border border-sky-200">
+          <div class="lg:col-span-6 space-y-4">
+            <h4 class="text-xl font-black text-slate-900">
+              （一）國家為什麼需要保障所有權？（P.110）
+            </h4>
+            <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+              保障人民私有財產的所有權是<strong>現代市場經濟制度的核心</strong>。當物的所有權界定清楚後，人們可以透過<strong>交易</strong>來分配各自擁有的物品，達成彼此最大利益並滿足雙方需求。
+            </p>
+            <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+              我國<strong>《憲法》第15條</strong>規定人民之財產權應予保障。然而，為了維護<strong>公共利益</strong>，國家必須藉由<strong>正當程序</strong>對所有權加以限制，因此<strong>所有權並非受到絕對的保護</strong>。
+            </p>
+
+            <h4 class="text-xl font-black text-slate-900 pt-2">
+              （二）所有權保障如何減少對他人的負面影響？
+            </h4>
+            <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+              若自然資源屬於<strong>無主物</strong>，當有人因私利排放廢水汙染河川生態時，全體人民只能接受環境公害。從<strong>社會契約論</strong>的觀點出發，國家的出現源於人民讓渡部分權利以追求全體利益極大化，因此<strong>自然資源歸於政府的財產</strong>，具有支配、管理河川的權力，透過法律規範防止環境公害，或透過協商加以處理。
+            </p>
+          </div>
+
+          <!-- 右側：重現課本 圖5-2-1 養豬場排放廢水互動對照模擬器 -->
+          <div class="lg:col-span-6">
+            <div class="bg-white rounded-2xl p-5 border-2 border-sky-200 shadow-md">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <span class="text-xs font-black px-2.5 py-1 rounded-full bg-sky-100 text-sky-800">📊 課本圖 5-2-1 情境模擬器（P.110）</span>
+                <div class="flex gap-1.5">
+                  <button onclick="switchRiverMode('unowned')" id="btnRiverUnowned" class="px-3 py-1 rounded-lg text-xs font-black bg-rose-600 text-white shadow">情境A：河川為無主物</button>
+                  <button onclick="switchRiverMode('managed')" id="btnRiverManaged" class="px-3 py-1 rounded-lg text-xs font-black bg-slate-100 text-slate-700 hover:bg-emerald-100">情境B：社會契約政府管理</button>
+                </div>
+              </div>
+
+              <!-- 河川汙染 vs 政府管理 SVG 插畫 -->
+              <div id="riverSvgContainer" class="rounded-xl overflow-hidden border border-slate-200">
+                <!-- 由 JS 動態切換或預設顯示無主物汙染情境 -->
+              </div>
+
+              <div id="riverDescBox" class="mt-3 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs sm:text-sm text-rose-950 font-medium">
+                <strong>⚠️ 圖5-2-1 養豬場排放的廢水：</strong>臺灣豬隻養殖業過去曾大量排放廢水汙染環境。當河川產權不清（無主物）且國家未落實有效管理時，業者將汙染成本轉嫁給社會大眾，導致環境公害與社會運作無效率！
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 區塊 3：學生微任務 1 —— 動產 vs 不動產 vs 非民法之物 互動分類挑戰 -->
+        <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-lg">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-black">🎮 第一島互動任務</span>
+              <h4 class="text-xl font-black mt-1">「民法之物」快手分類鑑定師</h4>
+              <p class="text-xs sm:text-sm text-slate-300">請判斷下列標的在民法上屬於「🏠 不動產」還是「📱 動產」？完成分類即可獲得第一島探索徽章！</p>
+            </div>
+            <div class="bg-slate-800 px-4 py-2 rounded-2xl border border-slate-700 text-sm font-bold">
+              答對進度：<span id="classifyScore" class="text-emerald-400 font-black text-lg">0 / 6</span>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4" id="classifyCardsContainer">
+            <!-- JS 渲染 6 個分類題目卡 -->
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- =================================================================
+         第二島：⚡ 所有權四大特性雷達島 (PDF P.111-112)
+    ================================================================== -->
+    <article id="island-panel-2" class="island-panel hidden bg-white rounded-3xl shadow-xl border border-amber-200 overflow-hidden">
+      <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-white p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-black tracking-wider uppercase">第二島｜課本 P.111 - P.112</span>
+            <h3 class="text-2xl sm:text-3xl font-black mt-2">⚡ 所有權的四大特性 ＆「一物二賣」優先性模擬</h3>
+            <p class="text-amber-100 text-sm sm:text-base mt-1">直接支配性、保護絕對性、排他性、優先性（物權絕對性 ＞ 債權相對性）</p>
+          </div>
+          <div class="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-right">
+            <div class="text-xs text-amber-100">黃金法理不等式</div>
+            <div class="text-lg font-black">物權（所有權）＞ 債權（契約）</div>
+            <div class="text-xs text-amber-100">絕對權（對抗不特定人）＞ 相對權</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-8">
+        <!-- 教師引導錦囊 -->
+        <div class="teacher-only-box hidden bg-amber-50 border-2 border-amber-400 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-200 pb-3 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-amber-500 text-white text-xs font-black">👨‍🏫 教師教學活動設計</span>
+              <h4 class="font-black text-amber-950 text-base">第二島教學策略：角色扮演「小辰、元元與阿庭的筆電爭奪戰」</h4>
+            </div>
+            <span class="text-xs font-bold text-amber-800 bg-amber-200/70 px-3 py-1 rounded-full">⏱️ 建議時間：15 分鐘</span>
+          </div>
+          <div class="grid md:grid-cols-3 gap-4 text-sm text-amber-950">
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">🎭 課堂角色扮演（5分鐘）</div>
+              <p>請三位同學分別扮演<strong>小辰（賣家）</strong>、<strong>元元（先簽約出5000元）</strong>、<strong>阿庭（後出6000元但先拿到電腦）</strong>。先讓全班直覺舉手：「電腦應該歸誰？」激發道德直覺（先來後到）與法律規範（物權優先與交易安全）的認知衝突！</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">⚠️ 常見迷思澄清</div>
+              <p>學生常誤以為「一物一權（排他性）」代表「一個東西只能有一個人當主人」。請特別強調課本 P.111 第10行：<strong>同一個所有權可以由數人共享，即「共有」（例如合買一塊地或一臺Switch）</strong>，但所有權仍然只有「一個」！</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">⚖️ 救濟途徑補充</div>
+              <p>元元雖然不能向阿庭要電腦（因為債權只有相對性），但元元並非自認倒楣，他可以依《民法》向違約的小辰主張<strong>「債務不履行之損害賠償」</strong>！</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 圖 5-2-2：所有權前三大特性互動漫畫卡片 (P.111) -->
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h4 class="text-xl font-black text-slate-900">📖 課本圖 5-2-2：小辰筆電的所有權特性（P.111）</h4>
+            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">*註：小辰、元元與阿庭皆具完全行為能力</span>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <!-- 特性 1：直接支配性 -->
+            <div class="bg-gradient-to-b from-amber-50/70 to-white rounded-2xl p-5 border-2 border-amber-200 shadow-sm hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-black">特性 1</span>
+                <span class="text-xs font-bold text-amber-800">自行決定如何使用</span>
+              </div>
+              <h5 class="text-lg font-black text-slate-900 mb-2">1. 直接支配性</h5>
+              <!-- SVG 插畫重現圖5-2-2左圖：送人 / 賣掉 -->
+              <div class="bg-white rounded-xl p-3 border border-amber-100 mb-3">
+                <svg viewBox="0 0 260 155" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                  <!-- 對話框：送人、賣掉 -->
+                  <ellipse cx="55" cy="42" rx="42" ry="24" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+                  <text x="55" y="48" text-anchor="middle" font-size="16" font-weight="900" fill="#9a3412">送人</text>
+                  <ellipse cx="205" cy="42" rx="42" ry="24" fill="#ecfccb" stroke="#3f6212" stroke-width="2"/>
+                  <text x="205" y="48" text-anchor="middle" font-size="16" font-weight="900" fill="#365314">賣掉</text>
+                  <!-- 小辰盤腿拿筆電 -->
+                  <circle cx="130" cy="48" r="20" fill="#fde68a" stroke="#1e293b" stroke-width="2.5"/>
+                  <path d="M 112 42 Q 130 25 148 40" fill="#1e293b"/>
+                  <circle cx="124" cy="48" r="2" fill="#1e293b"/>
+                  <circle cx="136" cy="48" r="2" fill="#1e293b"/>
+                  <path d="M 125 56 Q 130 61 135 56" fill="none" stroke="#1e293b" stroke-width="2"/>
+                  <!-- 綠色上衣 -->
+                  <rect x="102" y="70" width="56" height="50" rx="12" fill="#4ade80" stroke="#1e293b" stroke-width="2.5"/>
+                  <!-- 筆電 -->
+                  <rect x="100" y="95" width="60" height="38" rx="4" fill="#f8fafc" stroke="#1e293b" stroke-width="2.5"/>
+                  <circle cx="130" cy="114" r="4" fill="#94a3b8"/>
+                </svg>
+              </div>
+              <p class="text-sm text-slate-700 leading-relaxed">
+                所有權人對所有物有<strong>直接支配</strong>的權利，<strong>不需要其他人的同意或許可</strong>，可依照自己的意思<strong>占有、使用、收益與處分</strong>標的物（例如決定把筆電自用、送人或賣掉）。
+              </p>
+            </div>
+
+            <!-- 特性 2：保護絕對性 -->
+            <div class="bg-gradient-to-b from-sky-50/70 to-white rounded-2xl p-5 border-2 border-sky-200 shadow-sm hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-sky-600 text-white text-xs font-black">特性 2</span>
+                <span class="text-xs font-bold text-sky-800">可主張物品的所有</span>
+              </div>
+              <h5 class="text-lg font-black text-slate-900 mb-2">2. 保護絕對性</h5>
+              <!-- SVG 插畫重現圖5-2-2中圖：雖然借給你很久，但還是我的 -->
+              <div class="bg-white rounded-xl p-3 border border-sky-100 mb-3">
+                <svg viewBox="0 0 260 155" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                  <!-- 對白文字 -->
+                  <rect x="95" y="8" width="158" height="44" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+                  <text x="174" y="26" text-anchor="middle" font-size="11" font-weight="900" fill="#0c4a6e">雖然電腦借給你很久，</text>
+                  <text x="174" y="43" text-anchor="middle" font-size="11" font-weight="900" fill="#0c4a6e">但還是我的！</text>
+                  <!-- 小辰拿所有權大箭頭 -->
+                  <circle cx="65" cy="48" r="16" fill="#fde68a" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="45" y="66" width="40" height="52" rx="8" fill="#4ade80" stroke="#1e293b" stroke-width="2"/>
+                  <polygon points="18,75 115,75 135,92 115,109 18,109" fill="#fed7aa" stroke="#9a3412" stroke-width="2"/>
+                  <text x="72" y="98" text-anchor="middle" font-size="16" font-weight="900" fill="#7c2d12">所有權</text>
+                  <!-- 借用人用電腦 -->
+                  <circle cx="185" cy="82" r="15" fill="#fde68a" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="168" y="99" width="34" height="40" rx="6" fill="#fbbf24" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="195" y="112" width="42" height="26" rx="3" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+                </svg>
+              </div>
+              <p class="text-sm text-slate-700 leading-relaxed">
+                所有權屬於<strong>絕對權</strong>，意即所有權人可以向<strong>任何人（不特定人）</strong>主張所有權，任何人都不得干涉他人的所有權行使。
+              </p>
+            </div>
+
+            <!-- 特性 3：排他性 -->
+            <div class="bg-gradient-to-b from-emerald-50/70 to-white rounded-2xl p-5 border-2 border-emerald-200 shadow-sm hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-black">特性 3</span>
+                <span class="text-xs font-bold text-emerald-800">排除他人所有權主張</span>
+              </div>
+              <h5 class="text-lg font-black text-slate-900 mb-2">3. 排他性（一物一權）</h5>
+              <!-- SVG 插畫重現圖5-2-2右圖：借用人不能賣掉 -->
+              <div class="bg-white rounded-xl p-3 border border-emerald-100 mb-3">
+                <svg viewBox="0 0 260 155" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                  <!-- 借用人坐在桌前 -->
+                  <circle cx="65" cy="55" r="17" fill="#fde68a" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="46" y="74" width="38" height="48" rx="8" fill="#fbbf24" stroke="#1e293b" stroke-width="2"/>
+                  <line x1="80" y1="115" x2="180" y2="115" stroke="#475569" stroke-width="4"/>
+                  <rect x="105" y="85" width="45" height="28" rx="3" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+                  <!-- 禁止把電腦換錢的氣泡 -->
+                  <ellipse cx="185" cy="48" rx="62" ry="36" fill="#fef9c3" stroke="#854d0e" stroke-width="2"/>
+                  <rect x="140" y="34" width="32" height="22" rx="2" fill="#e2e8f0" stroke="#1e293b" stroke-width="2"/>
+                  <text x="184" y="50" text-anchor="middle" font-size="16" font-weight="900" fill="#15803d">➔</text>
+                  <circle cx="215" cy="45" r="15" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+                  <text x="215" y="51" text-anchor="middle" font-size="16" font-weight="900" fill="#15803d">$</text>
+                  <!-- 大叉叉 -->
+                  <line x1="130" y1="18" x2="240" y2="78" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+                  <line x1="240" y1="18" x2="130" y2="78" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <p class="text-sm text-slate-700 leading-relaxed">
+                <strong>一個物品只會有一個所有權</strong>，不會同時存在兩個所有權。但同一個所有權可能由數人共享，即<strong>「共有」</strong>（如合資買房）。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 特性 4：優先性（圖 5-2-3 一物二賣三步驟互動劇場 + 債權相對性與物權絕對性小辭典） -->
+        <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 rounded-3xl p-6 sm:p-8 border-2 border-amber-300 shadow-md">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-amber-600 text-white text-xs font-black">特性 4｜課本圖 5-2-3 互動劇場（P.112）</span>
+              <h4 class="text-2xl font-black text-slate-900 mt-1">4. 優先性：當「契約債權」與「所有權（物權）」衝突時誰優先？</h4>
+              <p class="text-sm text-slate-700 mt-1">除法律另有規定外，對於同一物的<strong>所有權會優先於債權</strong>。點擊下方三幕劇情按鈕，逐步拆解小辰、元元與阿庭的法律關係！</p>
+            </div>
+          </div>
+
+          <!-- 步驟切換按鈕 -->
+          <div class="grid grid-cols-3 gap-3 mb-6">
+            <button onclick="setPriorityStage(1)" id="btnStage1" class="p-3.5 rounded-2xl font-black text-sm sm:text-base transition border-2 border-amber-600 bg-amber-500 text-white shadow-md">
+              第一幕：小辰、元元約定交易 ($5,000)
+            </button>
+            <button onclick="setPriorityStage(2)" id="btnStage2" class="p-3.5 rounded-2xl font-black text-sm sm:text-base transition border-2 border-amber-200 bg-white text-slate-700 hover:bg-amber-100">
+              第二幕：阿庭出 $6,000 並受領電腦交付
+            </button>
+            <button onclick="setPriorityStage(3)" id="btnStage3" class="p-3.5 rounded-2xl font-black text-sm sm:text-base transition border-2 border-amber-200 bg-white text-slate-700 hover:bg-amber-100">
+              第三幕：元元抗議 vs 法律最終判定
+            </button>
+          </div>
+
+          <!-- 互動劇場顯示區 -->
+          <div class="grid lg:grid-cols-12 gap-6 items-center bg-white rounded-2xl p-5 border border-amber-200 shadow-inner">
+            <div class="lg:col-span-6" id="priorityComicSvgBox">
+              <!-- 由 JS 渲染三幕課本漫畫 SVG -->
+            </div>
+            <div class="lg:col-span-6 space-y-4" id="priorityAnalysisBox">
+              <!-- 由 JS 渲染對應法理解析 -->
+            </div>
+          </div>
+
+          <!-- 視覺化法理圖卡：課本小辭典「債權相對性 vs 物權絕對性」 -->
+          <div class="mt-6 bg-white rounded-2xl p-5 border-2 border-slate-200">
+            <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+              <span class="px-3 py-1 rounded-full bg-slate-800 text-white text-xs font-black">📖 課本小辭典（P.112）＆ 視覺化法理公式圖</span>
+              <span class="text-xs font-bold text-slate-600">債權相對性 vs 物權絕對性</span>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4 items-center">
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <svg viewBox="0 0 420 180" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                  <!-- 天平底座 -->
+                  <polygon points="190,168 230,168 210,130" fill="#475569"/>
+                  <!-- 傾斜天平橫桿（物權重、債權輕） -->
+                  <line x1="65" y1="115" x2="355" y2="75" stroke="#1e293b" stroke-width="5" stroke-linecap="round"/>
+                  <!-- 左盤：物權（阿庭） -->
+                  <rect x="20" y="118" width="145" height="44" rx="10" fill="#10b981" stroke="#047857" stroke-width="2"/>
+                  <text x="92" y="138" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">👑 物權（所有權）</text>
+                  <text x="92" y="154" text-anchor="middle" font-size="10" font-weight="700" fill="#ecfdf5">絕對權：對抗不特定人(阿庭勝)</text>
+
+                  <!-- 大於符號 -->
+                  <circle cx="210" cy="88" r="18" fill="#f59e0b"/>
+                  <text x="210" y="95" text-anchor="middle" font-size="22" font-weight="900" fill="#ffffff">＞</text>
+
+                  <!-- 右盤：債權（元元） -->
+                  <rect x="260" y="30" width="145" height="44" rx="10" fill="#64748b" stroke="#334155" stroke-width="2"/>
+                  <text x="332" y="50" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">📄 債權（買賣契約）</text>
+                  <text x="332" y="66" text-anchor="middle" font-size="10" font-weight="700" fill="#f1f5f9">相對權：僅對特定人(小辰)主張</text>
+                </svg>
+              </div>
+              <div class="space-y-2.5 text-sm text-slate-700">
+                <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                  <strong class="text-emerald-900">🛡️ 物權絕對性（Absolute Effect）：</strong>
+                  物權是得對<strong>「不特定人（所有人）」</strong>主張之權利，屬於絕對權。阿庭因受領電腦「交付」而取得所有權，可對抗包含元元在內的任何人。
+                </div>
+                <div class="p-3 rounded-xl bg-slate-100 border border-slate-300">
+                  <strong class="text-slate-900">🔗 債權相對性（Relative Effect）：</strong>
+                  債權是僅得對<strong>「特定人（契約當事人）」</strong>主張之權利，只有相對效力。小辰與元元的買賣契約屬於債權契約，元元只能向小辰請求違約賠償，<strong>不能對抗優先取得電腦所有權的阿庭</strong>。
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 課本 P.112「請想想看」師生思辨區 -->
+          <div class="mt-6 grid md:grid-cols-2 gap-4">
+            <div class="bg-white p-5 rounded-2xl border-2 border-amber-300">
+              <div class="text-xs font-black text-amber-700 mb-1">🤔 課本 P.112 請想想看 Q1</div>
+              <h5 class="font-black text-slate-900 text-base">1. 為什麼物權須優先於債權？倘若法律不是這樣規範，對於阿庭會有什麼影響呢？</h5>
+              <button onclick="toggleElement('think-ans-1')" class="mt-3 px-3.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-black transition">
+                💡 點擊展開／收合參考解析
+              </button>
+              <div id="think-ans-1" class="hidden mt-3 p-3.5 rounded-xl bg-amber-50 text-xs sm:text-sm text-slate-700 leading-relaxed border border-amber-200">
+                <strong>參考解析：</strong>因為債權契約原則上不須公開（別人不知道小辰私下先答應賣給元元），而物權透過「交付（占有）」或「登記」具有公示外觀。若債權優先於物權，善意購買並已拿到電腦的阿庭隨時可能被不知名的第三人（元元）追討電腦，將導致<strong>沒有人敢安心買東西，嚴重破壞市場「交易安全」與經濟秩序</strong>！
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border-2 border-amber-300">
+              <div class="text-xs font-black text-amber-700 mb-1">🤔 課本 P.112 請想想看 Q2</div>
+              <h5 class="font-black text-slate-900 text-base">2. 日常買賣契約原則上雙方同意即成立，不須書面，倘若一方反悔會有什麼影響？買賣雙方權益該如何保障？</h5>
+              <button onclick="toggleElement('think-ans-2')" class="mt-3 px-3.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-black transition">
+                💡 點擊展開／收合參考解析
+              </button>
+              <div id="think-ans-2" class="hidden mt-3 p-3.5 rounded-xl bg-amber-50 text-xs sm:text-sm text-slate-700 leading-relaxed border border-amber-200">
+                <strong>參考解析：</strong>口頭或訊息約定雖已成立契約，但若一方反悔，常面臨<strong>「舉證困難」</strong>或標的物已被轉賣交付他人的風險。為保障權益，雙方可透過：<strong>① 保留對話紀錄或簽訂書面契約、② 約定給付「定金」或「違約金」、③ 採取「一手交錢、一手交貨（同時履行）」</strong>儘速完成交付以取得物權！
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- =================================================================
+         第三島：🛡️ 民法第767條・所有權防衛堡壘島 (PDF P.113)
+    ================================================================== -->
+    <article id="island-panel-3" class="island-panel hidden bg-white rounded-3xl shadow-xl border border-rose-200 overflow-hidden">
+      <div class="bg-gradient-to-r from-rose-600 via-pink-600 to-orange-500 text-white p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-black tracking-wider uppercase">第三島｜課本 P.113</span>
+            <h3 class="text-2xl sm:text-3xl font-black mt-2">🛡️ 所有權的保障：民法第 767 條「物上請求權」防衛堡壘</h3>
+            <p class="text-rose-100 text-sm sm:text-base mt-1">所有物返還請求權 × 妨害除去請求權 × 妨害防止請求權</p>
+          </div>
+          <div class="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-right">
+            <div class="text-xs text-rose-100">物權保障核心條文</div>
+            <div class="text-lg font-black">《民法》第 767 條</div>
+            <div class="text-xs text-rose-100">返還 ／ 除去妨害 ／ 防止妨害</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-8">
+        <!-- 教師引導錦囊 -->
+        <div class="teacher-only-box hidden bg-amber-50 border-2 border-amber-400 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-200 pb-3 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-amber-500 text-white text-xs font-black">👨‍🏫 教師教學活動設計</span>
+              <h4 class="font-black text-amber-950 text-base">第三島教學策略：用「時間軸與侵害程度」秒懂民法第767條三種請求權</h4>
+            </div>
+            <span class="text-xs font-bold text-amber-800 bg-amber-200/70 px-3 py-1 rounded-full">⏱️ 建議時間：10 分鐘</span>
+          </div>
+          <div class="grid md:grid-cols-3 gap-4 text-sm text-amber-950">
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">🎯 判斷口訣教學</div>
+              <p>教導學生兩步驟判斷法：<br>① <strong>東西在誰手上？</strong>被別人霸占拿走 ➔ <strong>返還請求權</strong>。<br>② 東西還在自己手上，但<strong>已經受干擾損壞</strong> ➔ <strong>妨害除去</strong>；<strong>還沒發生但快要發生危險</strong> ➔ <strong>妨害防止</strong>。</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">🏠 鄰里生活實例連結</div>
+              <p>除了課本的小辰筆電，考試最愛考「房屋土地案例」：惡鄰居偷佔車位（返還）、違規停車擋住我家車庫出入口（除去妨害）、隔壁工地圍牆傾斜快垮下來壓到我家（防止妨害）。</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">⚖️ 司法救濟提醒</div>
+              <p>提醒學生：民法禁止私力救濟（原則上不能自己破門搶回），若對方拒不配合，所有權人可<strong>提起民事訴訟</strong>，請求法院命對方返還物品或回復原狀。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 民法第 767 條法條原文與視覺化公式圖 -->
+        <div class="bg-rose-50/70 rounded-2xl p-6 border-2 border-rose-200">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <span class="px-3 py-1 rounded-full bg-rose-600 text-white text-xs font-black">📜 法條原文（P.113）</span>
+            <span class="text-xs font-bold text-rose-800">有權利必有救濟（Ubi jus, ibi remedium）</span>
+          </div>
+          <blockquote class="text-base sm:text-lg font-black text-slate-900 bg-white p-4 rounded-xl border-l-4 border-rose-600 shadow-sm">
+            《民法》第 767 條：「所有人對於無權占有或侵奪其所有物者，得請求<span class="text-rose-600 underline decoration-2">返還</span>之。對於妨害其所有權者，得請求<span class="text-orange-600 underline decoration-2">除去</span>之。有妨害其所有權之虞者，得請求<span class="text-emerald-600 underline decoration-2">防止</span>之。」
+          </blockquote>
+
+          <!-- 圖 5-2-4：所有權的保障 三大請求權課本插畫卡 -->
+          <div class="grid md:grid-cols-3 gap-6 mt-6">
+            <!-- 1. 所有物返還請求權 -->
+            <div class="bg-white rounded-2xl p-5 border-2 border-rose-200 shadow-sm">
+              <div class="text-xs font-black text-rose-700 bg-rose-100 inline-block px-2.5 py-1 rounded-full mb-2">武器 1｜針對無權占有或侵奪</div>
+              <h5 class="text-lg font-black text-slate-900">1. 所有物返還請求權</h5>
+              <div class="my-3 bg-rose-50/50 rounded-xl p-3 border border-rose-100">
+                <svg viewBox="0 0 250 140" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="85" y="6" width="150" height="32" rx="8" fill="#ffe4e6" stroke="#e11d48" stroke-width="2"/>
+                  <text x="160" y="27" text-anchor="middle" font-size="14" font-weight="900" fill="#9f1239">把電腦還給我！</text>
+                  <!-- 小辰生氣指著對方 -->
+                  <circle cx="55" cy="52" r="16" fill="#fde68a" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="35" y="70" width="42" height="55" rx="8" fill="#4ade80" stroke="#1e293b" stroke-width="2"/>
+                  <line x1="77" y1="82" x2="115" y2="75" stroke="#4ade80" stroke-width="10" stroke-linecap="round"/>
+                  <!-- 霸占電腦的人 -->
+                  <circle cx="185" cy="58" r="15" fill="#fde68a" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="168" y="75" width="36" height="48" rx="6" fill="#fbbf24" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="120" y="85" width="42" height="26" rx="3" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+                  <line x1="95" y1="112" x2="215" y2="112" stroke="#475569" stroke-width="4"/>
+                </svg>
+              </div>
+              <p class="text-sm text-slate-700">
+                當他人<strong>無權占有或侵奪</strong>所有權人之所有物時（如借用期滿拒不歸還、偷竊霸占），所有權人可向其要求<strong>返還</strong>。
+              </p>
+            </div>
+
+            <!-- 2. 妨害除去請求權 -->
+            <div class="bg-white rounded-2xl p-5 border-2 border-orange-200 shadow-sm">
+              <div class="text-xs font-black text-orange-700 bg-orange-100 inline-block px-2.5 py-1 rounded-full mb-2">武器 2｜未占有但已造成妨害</div>
+              <h5 class="text-lg font-black text-slate-900">2. 妨害除去請求權</h5>
+              <div class="my-3 bg-orange-50/50 rounded-xl p-3 border border-orange-100">
+                <svg viewBox="0 0 250 140" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="10" y="4" width="230" height="38" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+                  <text x="125" y="20" text-anchor="middle" font-size="11" font-weight="900" fill="#9a3412">我的電腦沒辦法開機使用了，</text>
+                  <text x="125" y="35" text-anchor="middle" font-size="11" font-weight="900" fill="#9a3412">請你把它修理好！</text>
+                  <!-- 小辰與壞掉電腦 -->
+                  <circle cx="115" cy="68" r="15" fill="#fde68a" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="95" y="85" width="40" height="42" rx="8" fill="#4ade80" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="90" y="96" width="50" height="32" rx="4" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+                  <!-- 電腦故障警告符號 -->
+                  <circle cx="195" cy="82" r="28" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+                  <polygon points="195,64 212,95 178,95" fill="#ef4444"/>
+                  <text x="195" y="92" text-anchor="middle" font-size="16" font-weight="900" fill="#ffffff">!</text>
+                </svg>
+              </div>
+              <p class="text-sm text-slate-700">
+                雖未占有所有權人之物，但其行為<strong>已妨害所有權人的權利行使</strong>時，所有權人得請求<strong>除去其妨害</strong>。
+              </p>
+            </div>
+
+            <!-- 3. 妨害防止請求權 -->
+            <div class="bg-white rounded-2xl p-5 border-2 border-emerald-200 shadow-sm">
+              <div class="text-xs font-black text-emerald-700 bg-emerald-100 inline-block px-2.5 py-1 rounded-full mb-2">武器 3｜有妨害之虞（預先防範）</div>
+              <h5 class="text-lg font-black text-slate-900">3. 妨害防止請求權</h5>
+              <div class="my-3 bg-emerald-50/50 rounded-xl p-3 border border-emerald-100">
+                <svg viewBox="0 0 250 140" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                  <!-- 借用規範告示牌 -->
+                  <rect x="85" y="18" width="152" height="72" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2.5"/>
+                  <text x="161" y="42" text-anchor="middle" font-size="13" font-weight="900" fill="#065f46">📋 借用規範：</text>
+                  <text x="161" y="66" text-anchor="middle" font-size="13" font-weight="900" fill="#dc2626">「不可更動電腦設定」</text>
+                  <!-- 提醒人物 -->
+                  <circle cx="48" cy="58" r="16" fill="#fde68a" stroke="#1e293b" stroke-width="2"/>
+                  <rect x="30" y="76" width="36" height="50" rx="8" fill="#fde047" stroke="#1e293b" stroke-width="2"/>
+                </svg>
+              </div>
+              <p class="text-sm text-slate-700">
+                所有權人對於<strong>可能會妨害所有權行使的行為（有妨害之虞）</strong>，可以<strong>預先要求</strong>他人不得從事該行為。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 互動防衛模擬器：生活案例配對 -->
+        <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-lg">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-400/30 text-xs font-black">🛡️ 第三島互動任務</span>
+              <h4 class="text-xl font-black mt-1">民法第 767 條「物上請求權」實戰防衛官</h4>
+              <p class="text-xs sm:text-sm text-slate-300">面對以下 4 種侵權危機，請為當事人選擇正確的民法第 767 條法律武器！</p>
+            </div>
+            <div class="bg-slate-800 px-4 py-2 rounded-2xl border border-slate-700 text-sm font-bold">
+              防衛成功：<span id="defenseScore" class="text-rose-400 font-black text-lg">0 / 4</span>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4" id="defenseCasesContainer">
+            <!-- JS 動態生成 4 道情境防衛題 -->
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- =================================================================
+         第四島：⚖️ 所有權限制與移轉法則島 (PDF P.114)
+    ================================================================== -->
+    <article id="island-panel-4" class="island-panel hidden bg-white rounded-3xl shadow-xl border border-indigo-200 overflow-hidden">
+      <div class="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 text-white p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-black tracking-wider uppercase">第四島｜課本 P.114</span>
+            <h3 class="text-2xl sm:text-3xl font-black mt-2">⚖️ 所有權保障的限制：物權法定主義 ＆ 動產/不動產移轉法則</h3>
+            <p class="text-indigo-100 text-sm sm:text-base mt-1">不動產登記生效要件主義（§758） vs 動產交付移轉所有權（§761）</p>
+          </div>
+          <div class="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-right">
+            <div class="text-xs text-indigo-100">物權變動公示原則</div>
+            <div class="text-lg font-black">不動產看「登記」・動產看「交付」</div>
+            <div class="text-xs text-indigo-100">簽訂買賣契約僅生債權效力</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-8">
+        <!-- 教師引導錦囊 -->
+        <div class="teacher-only-box hidden bg-amber-50 border-2 border-amber-400 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-200 pb-3 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-amber-500 text-white text-xs font-black">👨‍🏫 教師教學活動設計</span>
+              <h4 class="font-black text-amber-950 text-base">第四島教學策略：破解大考必考陷阱「簽完買賣契約 ≠ 取得所有權」</h4>
+            </div>
+            <span class="text-xs font-bold text-amber-800 bg-amber-200/70 px-3 py-1 rounded-full">⏱️ 建議時間：10 分鐘</span>
+          </div>
+          <div class="grid md:grid-cols-3 gap-4 text-sm text-amber-950">
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">🚨 必考陷阱題拆解</div>
+              <p>考題常問：「陳太太將房子賣給林先生，雙方簽妥買賣契約並付清頭期款，連鑰匙都交給林先生搬進去住了，請問誰是房屋所有權人？」答案仍是<strong>陳太太</strong>！因為<strong>尚未到地政事務所辦理移轉登記</strong>！</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">🚗 汽機車的迷思澄清</div>
+              <p>問學生：「買賣汽車或機車要去監理站過戶，所以汽機車是不動產嗎？」澄清：<strong>汽機車在民法上是「動產」</strong>，只須「交付」即移轉所有權（監理站過戶僅為行政管理與對抗要件，非生效要件）。</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">🔌 邏輯電路教學法</div>
+              <p>利用本頁下方的「所有權移轉邏輯電路模擬器」，將「簽約（債權）」與「登記/交付（物權公示）」比喻為串聯電路的兩道開關，兩者皆導通才會點亮「取得所有權」燈號！</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 課文重點：古羅馬絕對所有權 ➔ 現代所有權兩大限制 (P.114) -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-indigo-50/70 rounded-2xl p-6 border-2 border-indigo-200">
+            <span class="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-black">限制 1｜民法第 757 條精神</span>
+            <h4 class="text-xl font-black text-slate-900 mt-2">1. 物權必須由法律規定，不能自行創設（物權法定主義）</h4>
+            <p class="text-sm sm:text-base text-slate-700 mt-2 leading-relaxed">
+              古羅馬採取「絕對所有權原則」（不干涉個人使用方式與目的）；隨著資本主義社會興起，限制所有權成為新趨勢。
+            </p>
+            <p class="text-sm sm:text-base text-slate-700 mt-2 leading-relaxed">
+              因為<strong>物權優先於債權，又具有保護絕對性</strong>，對於物權的保障必須考慮周全，<strong>不能由當事人自行約定</strong>。因此民法規定：<strong>「物權除依法律或習慣外，不得創設」</strong>，此概念稱為<strong>「物權法定主義」</strong>。
+            </p>
+          </div>
+
+          <div class="bg-cyan-50/70 rounded-2xl p-6 border-2 border-cyan-200">
+            <span class="px-3 py-1 rounded-full bg-cyan-700 text-white text-xs font-black">限制 2｜民法第 758 條 ＆ 第 761 條</span>
+            <h4 class="text-xl font-black text-slate-900 mt-2">2. 不動產物權必須要登記（不動產登記生效主義）</h4>
+            <p class="text-sm sm:text-base text-slate-700 mt-2 leading-relaxed">
+              相較於動產，由於<strong>不動產的市場價值高</strong>，因此民法規定不動產的取得、變更、喪失等必須<strong>依法登記，且登記後才產生所有權</strong>，藉以保障不動產之交易安全，稱為<strong>「不動產登記生效主義」</strong>。
+            </p>
+            <div class="mt-3 p-3 rounded-xl bg-white border border-cyan-200 text-xs sm:text-sm text-slate-700">
+              📖 <strong>課本小辭典（P.114）所有權移轉：</strong><br>
+              • <strong>不動產登記生效要件主義（民法§758 I）</strong>：不動產物權行為，非經登記，不生效力（專指<strong>地政機關</strong>所辦理土地登記簿上之登記）。<br>
+              • <strong>動產交付移轉所有權（民法§761 I）</strong>：動產物權之讓與，非將動產<strong>交付</strong>（占有的移轉），不生效力。
+            </div>
+          </div>
+        </div>
+
+        <!-- 視覺化邏輯電路圖 + 互動「所有權移轉生效判定器」 (P.114 陳太太賣屋 vs 手機買賣) -->
+        <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-indigo-500/30">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-indigo-500/30 text-indigo-200 border border-indigo-400/40 text-xs font-black">⚡ 視覺化法理邏輯電路圖 × 課本 P.114 案例模擬</span>
+              <h4 class="text-xl sm:text-2xl font-black mt-1">所有權移轉「雙開關」邏輯電路實驗室</h4>
+              <p class="text-xs sm:text-sm text-slate-300 mt-1">請切換交易標的（🏠 陳太太賣房給林先生 vs 📱 買賣手機），並點擊電路開關，觀察何時才會正式移轉所有權！</p>
+            </div>
+            <div class="flex gap-2 bg-slate-800 p-1.5 rounded-2xl border border-slate-700">
+              <button onclick="setCircuitType('real_estate')" id="btnCircuitRealEstate" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-black bg-indigo-600 text-white shadow">
+                🏠 案例A：陳太太賣房屋（不動產）
+              </button>
+              <button onclick="setCircuitType('movable')" id="btnCircuitMovable" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-black text-slate-300 hover:text-white">
+                📱 案例B：買賣二手手機（動產）
+              </button>
+            </div>
+          </div>
+
+          <!-- 互動開關控制面板 -->
+          <div class="grid sm:grid-cols-3 gap-4 mb-6">
+            <button onclick="toggleCircuitSwitch('contract')" id="swContract" class="p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-950/60 text-left transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-emerald-300">開關 S1（債權行為）</span>
+                <span id="swContractStatus" class="px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 text-xs font-black">ON 已簽約</span>
+              </div>
+              <div class="font-black text-base mt-1.5">✍️ 雙方簽訂買賣契約</div>
+              <div class="text-xs text-slate-300 mt-1">買賣契約成立，產生「債權相對效力」</div>
+            </button>
+
+            <button onclick="toggleCircuitSwitch('handover')" id="swHandover" class="p-4 rounded-2xl border-2 border-slate-600 bg-slate-800/70 text-left transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-300">開關 S2（占有移轉）</span>
+                <span id="swHandoverStatus" class="px-2.5 py-0.5 rounded-full bg-slate-600 text-slate-200 text-xs font-black">OFF 未交付</span>
+              </div>
+              <div class="font-black text-base mt-1.5" id="swHandoverTitle">🔑 交付房屋鑰匙／交貨</div>
+              <div class="text-xs text-slate-300 mt-1" id="swHandoverDesc">對不動產而言，僅交屋鑰匙不等於登記！</div>
+            </button>
+
+            <button onclick="toggleCircuitSwitch('register')" id="swRegister" class="p-4 rounded-2xl border-2 border-slate-600 bg-slate-800/70 text-left transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-300">開關 S3（地政公示）</span>
+                <span id="swRegisterStatus" class="px-2.5 py-0.5 rounded-full bg-slate-600 text-slate-200 text-xs font-black">OFF 未登記</span>
+              </div>
+              <div class="font-black text-base mt-1.5">🏛️ 地政事務所移轉登記</div>
+              <div class="text-xs text-slate-300 mt-1">民法§758：不動產物權非經登記不生效力</div>
+            </button>
+          </div>
+
+          <!-- 動態 SVG 邏輯電路圖 -->
+          <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800" id="circuitSvgBox">
+            <!-- JS 即時渲染邏輯電路圖 -->
+          </div>
+
+          <!-- 判定結果橫幅 -->
+          <div id="circuitVerdictBox" class="mt-4 p-4 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-sm sm:text-base font-bold text-amber-200">
+            <!-- JS 動態更新法律判定結果 -->
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- =================================================================
+         第五島：🤝 公共利益調和與開放原始碼未來島 (PDF P.115)
+    ================================================================== -->
+    <article id="island-panel-5" class="island-panel hidden bg-white rounded-3xl shadow-xl border border-purple-200 overflow-hidden">
+      <div class="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 text-white p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-black tracking-wider uppercase">第五島｜課本 P.115</span>
+            <h3 class="text-2xl sm:text-3xl font-black mt-2">🤝 私有財產與公共利益的調和：臺灣騎樓 × 智慧財產權 × 開放原始碼</h3>
+            <p class="text-purple-100 text-sm sm:text-base mt-1">從有形物權的「騎樓通行權」到無形財產「著作權法第1條、合理使用與 Open Source」</p>
+          </div>
+          <div class="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-right">
+            <div class="text-xs text-purple-100">本節總結與跨節預告</div>
+            <div class="text-lg font-black">創作激勵 ⚖️ 公共共享</div>
+            <div class="text-xs text-purple-100">《著作權法》第 1 條</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-8">
+        <!-- 教師引導錦囊 -->
+        <div class="teacher-only-box hidden bg-amber-50 border-2 border-amber-400 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-200 pb-3 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-amber-500 text-white text-xs font-black">👨‍🏫 教師教學活動設計</span>
+              <h4 class="font-black text-amber-950 text-base">第五島教學策略：從「我家騎樓能不能擺攤圍起來？」到「開放原始碼」</h4>
+            </div>
+            <span class="text-xs font-bold text-amber-800 bg-amber-200/70 px-3 py-1 rounded-full">⏱️ 建議時間：10 分鐘</span>
+          </div>
+          <div class="grid md:grid-cols-3 gap-4 text-sm text-amber-950">
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">🌧️ 臺灣在地生活提問</div>
+              <p>問學生：「一樓店面的騎樓土地明明寫在屋主的所有權狀裡，屋主也有繳地價稅，為什麼屋主不能把騎樓用鐵捲門封起來或堆滿雜物不讓人走？」引出<strong>私有財產權受公共利益（行人通行安全）限制</strong>。</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">💻 資訊科技跨域連結</div>
+              <p>搭配 P.115 小辭典「開放原始碼（Open Source）」，舉例 Android 系統、Linux 或開源 AI 模型，說明為何有些工程師不追求專利壟斷，反而主張自由流通共享。</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl border border-amber-200">
+              <div class="font-black text-amber-800 mb-1">🔗 連結下一節（P.115末段）</div>
+              <p>點出課本結語：本節從「財產使用」角度探討所有權；下一節將從「管理與分配」角度探討<strong>夫妻財產制與遺產繼承制度</strong>。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 兩大核心主題對照：有形物權（騎樓） vs 無形財產（智慧財產權與開源） -->
+        <div class="grid lg:grid-cols-2 gap-6">
+          <!-- 左卡：臺灣騎樓與有形物權限制 -->
+          <div class="bg-gradient-to-b from-purple-50/70 to-white rounded-2xl p-6 border-2 border-purple-200 shadow-sm">
+            <span class="px-3 py-1 rounded-full bg-purple-600 text-white text-xs font-black">有形物權 × 公共利益（P.115）</span>
+            <h4 class="text-xl font-black text-slate-900 mt-2">🌧️ 臺灣「騎樓」建築設計的法理調和</h4>
+            <!-- 騎樓 SVG 插畫 -->
+            <div class="my-4 bg-white rounded-xl p-4 border border-purple-100">
+              <svg viewBox="0 0 380 165" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                <!-- 天空雨滴 -->
+                <line x1="40" y1="15" x2="30" y2="35" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="80" y1="12" x2="70" y2="32" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="120" y1="18" x2="110" y2="38" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                <text x="65" y="55" text-anchor="middle" font-size="11" font-weight="900" fill="#0284c7">臺灣炎熱潮濕多雨</text>
+                <!-- 建築物二樓突出、一樓內縮騎樓 -->
+                <rect x="145" y="15" width="210" height="55" rx="4" fill="#e9d5ff" stroke="#7e22ce" stroke-width="2.5"/>
+                <text x="250" y="47" text-anchor="middle" font-size="13" font-weight="900" fill="#581c87">二樓以上建築主體</text>
+                <!-- 騎樓柱子 -->
+                <rect x="150" y="70" width="16" height="75" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+                <!-- 一樓內縮店面 -->
+                <rect x="245" y="70" width="110" height="75" fill="#fef3c7" stroke="#b45309" stroke-width="2.5"/>
+                <text x="300" y="105" text-anchor="middle" font-size="12" font-weight="900" fill="#92400e">一樓房屋內縮</text>
+                <text x="300" y="122" text-anchor="middle" font-size="10" fill="#78350f">(屋主私有所有權)</text>
+                <!-- 騎樓走廊與行人 -->
+                <rect x="166" y="132" width="79" height="13" fill="#bbf7d0"/>
+                <circle cx="205" cy="95" r="10" fill="#fde68a" stroke="#1e293b" stroke-width="2"/>
+                <rect x="197" y="107" width="16" height="24" rx="4" fill="#10b981" stroke="#1e293b" stroke-width="2"/>
+                <text x="205" y="80" text-anchor="middle" font-size="11" font-weight="900" fill="#15803d">騎樓供公眾通行</text>
+                <line x1="15" y1="145" x2="365" y2="145" stroke="#475569" stroke-width="4"/>
+              </svg>
+            </div>
+            <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+              現代社會人際互動緊密，若完全保障所有權，有時會影響公共利益。例如臺灣氣候炎熱潮濕常有雨，房屋建築設有<strong>「騎樓」</strong>，<strong>各戶人家將一樓房屋內縮，保留空間以供行人行走</strong>，這就是限制部分私人所有權以謀求社會公共利益的典型例子。
+            </p>
+          </div>
+
+          <!-- 右卡：無形財產（智慧財產權）與開放原始碼 -->
+          <div class="bg-gradient-to-b from-indigo-50/70 to-white rounded-2xl p-6 border-2 border-indigo-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-black">無形財產 × 開放原始碼（P.115）</span>
+              <h4 class="text-xl font-black text-slate-900 mt-2">💻 智慧財產權、合理使用與開放原始碼運動</h4>
+              <p class="text-sm sm:text-base text-slate-700 mt-3 leading-relaxed">
+                相對於有形的物權，法律也保障無形的財產：<strong>智慧財產權</strong>，保障創作者權益、肯定智慧成果並鼓勵創作。
+              </p>
+              <p class="text-sm sm:text-base text-slate-700 mt-2 leading-relaxed">
+                但有人質疑過度保障反而減緩創作發展，且並非所有人都是為了獲利才發明創造。例如<strong>「開放原始碼（Open Source）」</strong>運動便帶有反著作權壟斷色彩，追求真正的創作自由。因此法律也保障一定的<strong>「合理使用權」</strong>，兼顧創作者權益與人類智慧成果發展。
+              </p>
+            </div>
+
+            <!-- 課本小辭典：開放原始碼 -->
+            <div class="mt-4 bg-indigo-950 text-white p-4 rounded-2xl border border-indigo-700">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-black text-indigo-300">📖 課本小辭典（P.115）：開放原始碼 (Open Source)</span>
+                <span class="font-mono text-xs bg-indigo-800 px-2 py-0.5 rounded">&lt;open_source/&gt;</span>
+              </div>
+              <p class="text-xs sm:text-sm text-indigo-100 leading-relaxed">
+                <strong>原始碼（Source Code）</strong>是在電腦等資訊設備上所使用的應用軟體之原始程式碼。在<strong>商業軟體</strong>上，多是無法被使用者檢視及改寫；而<strong>開放原始碼運動強調資訊的自由流通與共享，以對抗商業公司的壟斷</strong>。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 公民論壇：智慧財產權是保障還是限制？（P.115） -->
+        <div class="bg-gradient-to-r from-purple-100 via-indigo-50 to-sky-100 rounded-3xl p-6 border-2 border-purple-300">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <span class="px-3 py-1 rounded-full bg-purple-800 text-white text-xs font-black">🏛️ 課本 P.115 公民論壇</span>
+            <span class="text-xs font-bold text-purple-900">《著作權法》第 1 條立法目的</span>
+          </div>
+          <h4 class="text-xl font-black text-slate-900">智慧財產權是保障還是限制？應如何與公共利益調和？</h4>
+          <blockquote class="mt-3 p-4 rounded-xl bg-white/90 border-l-4 border-purple-600 text-sm sm:text-base font-bold text-slate-800">
+            我國《著作權法》第 1 條規定：「為<strong>保障著作人著作權益</strong>，<strong>調和社會公共利益</strong>，<strong>促進國家文化發展</strong>，特制訂本法。」
+          </blockquote>
+          <p class="text-sm text-slate-700 mt-3 leading-relaxed">
+            若沒有過去知識的累積，無法造成現今的進步；但若只著眼於公共利益，人們恐失去創作、發明的動力。歡迎前往下方<strong>「📊 師生互動投票所」</strong>投下你的觀點！
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <!-- 島嶼底部快速翻頁導覽 -->
+    <div class="mt-6 flex items-center justify-between bg-white px-6 py-4 rounded-2xl shadow border border-slate-200">
+      <button onclick="prevIsland()" id="btnPrevIsland" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-sm transition">
+        ⬅️ 上一座知識島
+      </button>
+      <span id="islandPagerText" class="text-sm font-black text-slate-600">第 1 / 5 島</span>
+      <button onclick="nextIsland()" id="btnNextIsland" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-black text-sm shadow transition">
+        下一座知識島 ➡️
+      </button>
+    </div>
+  </main>
+
+  <!-- =====================================================================
+       🎬 影音活化館（嵌入真實 YouTube 教學影片 + 觀影檢核任務）
+  ====================================================================== -->
+  <section id="video-hall" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <div class="bg-white rounded-3xl shadow-xl border-2 border-rose-200 overflow-hidden">
+      <div class="bg-gradient-to-r from-rose-600 to-amber-500 text-white p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-black uppercase">🎬 多媒體活化教材館</span>
+            <h2 class="text-2xl sm:text-3xl font-black mt-1">高中公民與社會：財產權保障與所有權的物權特性</h2>
+            <p class="text-rose-100 text-sm mt-1">搭配數位教學影片與「觀影重點互動檢核表」，強化物權特性與移轉要件記憶</p>
+          </div>
+          <a href="https://www.youtube.com/results?search_query=%E9%AB%98%E4%B8%AD%E5%85%AC%E6%B0%91+%E6%89%80%E6%9C%89%E6%AC%8A%E7%9A%84%E7%89%A9%E6%AC%8A%E7%89%B9%E6%80%A7" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-2xl bg-white text-rose-700 font-black text-xs sm:text-sm shadow hover:bg-rose-50 transition">
+            🔗 於 YouTube 開啟更多相關教學影片 ↗
+          </a>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 grid lg:grid-cols-12 gap-8 items-start">
+        <!-- 左側：YouTube 嵌入式播放器與精選主題切換 -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="flex flex-wrap gap-2">
+            <button onclick="switchVideo('aEegl9JyC4Y', '高中公民：所有權的物權特性與保障限制')" class="px-3.5 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-black shadow">
+              ▶️ 影片 1：所有權的物權特性總整理
+            </button>
+            <button onclick="switchVideo('U8vK-c1-x3w', '民法第767條物上請求權與動產不動產移轉')" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-100 text-slate-700 text-xs font-black transition">
+              ▶️ 備用頻道搜尋與延伸案例導讀
+            </button>
+          </div>
+
+          <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 shadow-lg border-2 border-slate-200">
+            <iframe id="youtubePlayer" class="w-full h-full" src="https://www.youtube.com/embed/aEegl9JyC4Y" title="高中公民：所有權的物權特性教學影片" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs sm:text-sm text-slate-600 flex flex-wrap items-center justify-between gap-2">
+            <span>💡 <strong>觀影小幫手：</strong>若校園網路阻擋嵌入式外連，可點擊右上角按鈕直接開啟 YouTube 搜尋，或搭配右側「時間軸重點導讀」進行課堂講解。</span>
+          </div>
+        </div>
+
+        <!-- 右側：觀影重點檢核任務清單 -->
+        <div class="lg:col-span-5 bg-rose-50/60 rounded-2xl p-5 border-2 border-rose-200 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-black text-slate-900">✅ 學生觀影重點自我檢核表</h3>
+            <span id="videoCheckCount" class="px-2.5 py-1 rounded-full bg-rose-600 text-white text-xs font-black">0 / 5 已掌握</span>
+          </div>
+          <p class="text-xs text-slate-600">觀看影片或閱讀完五座知識島後，請勾選你已經完全理解的核心觀念（勾選可累積總探索進度）：</p>
+
+          <div class="space-y-2.5 text-sm">
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-white border border-rose-200 cursor-pointer hover:bg-rose-50/50 transition">
+              <input type="checkbox" onchange="updateVideoChecklist()" class="video-check mt-1 w-4 h-4 accent-rose-600 rounded">
+              <span><strong>【01:15 物之分類】</strong>能區分民法上的<strong>不動產</strong>（土地與定著物）與<strong>動產</strong>（手機、汽機車、寵物）。</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-white border border-rose-200 cursor-pointer hover:bg-rose-50/50 transition">
+              <input type="checkbox" onchange="updateVideoChecklist()" class="video-check mt-1 w-4 h-4 accent-rose-600 rounded">
+              <span><strong>【03:40 四大特性】</strong>能說出所有權的<strong>直接支配性、保護絕對性、排他性（一物一權，但可共有）、優先性</strong>。</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-white border border-rose-200 cursor-pointer hover:bg-rose-50/50 transition">
+              <input type="checkbox" onchange="updateVideoChecklist()" class="video-check mt-1 w-4 h-4 accent-rose-600 rounded">
+              <span><strong>【06:10 一物二賣】</strong>理解為何<strong>物權（絕對權）優先於債權（相對權）</strong>，以及阿庭為何能取得筆電所有權。</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-white border border-rose-200 cursor-pointer hover:bg-rose-50/50 transition">
+              <input type="checkbox" onchange="updateVideoChecklist()" class="video-check mt-1 w-4 h-4 accent-rose-600 rounded">
+              <span><strong>【08:25 民法§767】</strong>能分辨<strong>所有物返還、妨害除去、妨害防止</strong>三種物上請求權的適用情境。</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-white border border-rose-200 cursor-pointer hover:bg-rose-50/50 transition">
+              <input type="checkbox" onchange="updateVideoChecklist()" class="video-check mt-1 w-4 h-4 accent-rose-600 rounded">
+              <span><strong>【10:50 限制與公益】</strong>明白<strong>物權法定主義</strong>、<strong>不動產登記生效／動產交付生效</strong>，以及騎樓與開放原始碼對公共利益的調和。</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       📊 師生互動投票所（即時視覺化長條圖 + 模擬全班投票 + 觀點牆）
+  ====================================================================== -->
+  <section id="voting-station" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <div class="bg-white rounded-3xl shadow-xl border-2 border-amber-300 overflow-hidden">
+      <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-black uppercase">📊 師生公民思辨投票所</span>
+            <h2 class="text-2xl sm:text-3xl font-black mt-1">課堂即時民調：交易安全 vs 先來後到、智財保護 vs 開放共享</h2>
+            <p class="text-amber-100 text-sm mt-1">結合課本 P.112「請想想看」與 P.115「公民論壇」，支援課堂舉手統計與模擬全班即時數據</p>
+          </div>
+          <button onclick="simulateClassVotes()" class="px-4 py-2.5 rounded-2xl bg-white text-amber-900 font-black text-xs sm:text-sm shadow hover:bg-amber-50 transition">
+            🎲 教師工具：模擬全班 36 人即時投票數據
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 grid lg:grid-cols-2 gap-8">
+        <!-- 投票議題一：P.112 一物二賣 -->
+        <div class="bg-amber-50/60 rounded-2xl p-6 border-2 border-amber-200 flex flex-col justify-between">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-amber-600 text-white text-xs font-black">議題一｜對應課本 P.112 一物二賣</span>
+            <h3 class="text-lg sm:text-xl font-black text-slate-900 mt-2">
+              在小辰一物二賣案例中，法律規定「物權優先於債權」（後買但先拿到電腦的阿庭取得所有權，先簽約的元元拿不到電腦），你認為這樣的制度設計合理嗎？
+            </h3>
+
+            <div class="mt-4 space-y-3">
+              <button onclick="castVote(1, 'A')" class="w-full p-3.5 rounded-xl bg-white hover:bg-emerald-50 border-2 border-emerald-300 text-left transition flex items-center justify-between">
+                <span class="font-bold text-sm text-slate-800">👍 A. 合理！保障「交易安全」，否則買東西拿到手還怕被別人討走</span>
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-xs font-black whitespace-nowrap">投此項</span>
+              </button>
+              <button onclick="castVote(1, 'B')" class="w-full p-3.5 rounded-xl bg-white hover:bg-rose-50 border-2 border-rose-300 text-left transition flex items-center justify-between">
+                <span class="font-bold text-sm text-slate-800">🤔 B. 不太服氣！元元明明先約定好，應該更保護先簽約的人</span>
+                <span class="px-2.5 py-1 rounded-lg bg-rose-600 text-white text-xs font-black whitespace-nowrap">投此項</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 議題一即時圖表 -->
+          <div class="mt-5 bg-white p-4 rounded-xl border border-amber-200">
+            <div class="flex justify-between text-xs font-black text-slate-600 mb-2">
+              <span>📊 即時得票統計（總票數：<span id="poll1Total">20</span> 票）</span>
+            </div>
+            <div class="space-y-2.5">
+              <div>
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-emerald-800">A. 合理（保障物權公示與交易安全）</span>
+                  <span id="poll1TextA" class="font-black text-emerald-700">70% (14票)</span>
+                </div>
+                <div class="w-full bg-slate-100 h-3.5 rounded-full overflow-hidden">
+                  <div id="poll1BarA" class="bg-emerald-500 h-full transition-all duration-500" style="width: 70%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-rose-800">B. 不太服氣（應優先保護先簽約者）</span>
+                  <span id="poll1TextB" class="font-black text-rose-700">30% (6票)</span>
+                </div>
+                <div class="w-full bg-slate-100 h-3.5 rounded-full overflow-hidden">
+                  <div id="poll1BarB" class="bg-rose-500 h-full transition-all duration-500" style="width: 30%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 投票議題二：P.115 公民論壇 智慧財產權 vs 開放原始碼 -->
+        <div class="bg-purple-50/60 rounded-2xl p-6 border-2 border-purple-200 flex flex-col justify-between">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-purple-600 text-white text-xs font-black">議題二｜對應課本 P.115 公民論壇</span>
+            <h3 class="text-lg sm:text-xl font-black text-slate-900 mt-2">
+              面對數位與 AI 時代，對於軟體與創作，你認為法律政策應該更偏向「強化智慧財產權排他保障」還是「擴大開放原始碼與合理使用共享」？
+            </h3>
+
+            <div class="mt-4 space-y-3">
+              <button onclick="castVote(2, 'A')" class="w-full p-3.5 rounded-xl bg-white hover:bg-indigo-50 border-2 border-indigo-300 text-left transition flex items-center justify-between">
+                <span class="font-bold text-sm text-slate-800">🛡️ A. 強化保障創作者！沒有足夠獲利保障，誰還願意辛苦研發創作？</span>
+                <span class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-xs font-black whitespace-nowrap">投此項</span>
+              </button>
+              <button onclick="castVote(2, 'B')" class="w-full p-3.5 rounded-xl bg-white hover:bg-purple-50 border-2 border-purple-300 text-left transition flex items-center justify-between">
+                <span class="font-bold text-sm text-slate-800">🌐 B. 擴大開放共享！防止商業壟斷，讓全人類站在巨人的肩膀上創新</span>
+                <span class="px-2.5 py-1 rounded-lg bg-purple-600 text-white text-xs font-black whitespace-nowrap">投此項</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 議題二即時圖表 -->
+          <div class="mt-5 bg-white p-4 rounded-xl border border-purple-200">
+            <div class="flex justify-between text-xs font-black text-slate-600 mb-2">
+              <span>📊 即時得票統計（總票數：<span id="poll2Total">22</span> 票）</span>
+            </div>
+            <div class="space-y-2.5">
+              <div>
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-indigo-800">A. 強化智慧財產權排他保障</span>
+                  <span id="poll2TextA" class="font-black text-indigo-700">45% (10票)</span>
+                </div>
+                <div class="w-full bg-slate-100 h-3.5 rounded-full overflow-hidden">
+                  <div id="poll2BarA" class="bg-indigo-500 h-full transition-all duration-500" style="width: 45%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-purple-800">B. 擴大開放原始碼與合理使用共享</span>
+                  <span id="poll2TextB" class="font-black text-purple-700">55% (12票)</span>
+                </div>
+                <div class="w-full bg-slate-100 h-3.5 rounded-full overflow-hidden">
+                  <div id="poll2BarB" class="bg-purple-500 h-full transition-all duration-500" style="width: 55%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 班級觀點便利貼留言板 -->
+      <div class="px-6 sm:px-8 pb-8">
+        <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+          <h4 class="font-black text-slate-900 text-base mb-3">💬 課堂公民觀點便利貼（歡迎師生新增想法）</h4>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <input id="opinionAuthor" type="text" placeholder="暱稱／座號（例：205班 08號）" class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm w-full sm:w-52 focus:outline-none focus:ring-2 focus:ring-amber-400">
+            <input id="opinionText" type="text" placeholder="輸入你對「物權優先於債權」或「開放原始碼 vs 著作權」的看法..." class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm flex-1 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-amber-400">
+            <button onclick="addOpinionPost()" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-sm shadow transition">
+              ➕ 張貼便利貼
+            </button>
+          </div>
+          <div id="opinionWall" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <!-- 預設三張學生觀點便利貼 -->
+            <div class="p-3.5 rounded-xl bg-yellow-100/90 border border-yellow-300 text-xs sm:text-sm text-slate-800 shadow-sm">
+              <div class="font-black text-amber-900 mb-1">📌 學生範例 A（支持物權優先）</div>
+              <p>如果先簽約的人可以向不知情的買家討回電腦，那大家去買二手筆電時不就要先調查賣家有沒有跟別人聊過LINE？交易成本太高了！</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-sky-100/90 border border-sky-300 text-xs sm:text-sm text-slate-800 shadow-sm">
+              <div class="font-black text-sky-900 mb-1">📌 學生範例 B（同情元元但理解法律）</div>
+              <p>元元雖然拿不到電腦，但可以向小辰請求違約損害賠償；下次買貴重物品最好馬上銀貨兩訖完成「交付」！</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-purple-100/90 border border-purple-300 text-xs sm:text-sm text-slate-800 shadow-sm">
+              <div class="font-black text-purple-900 mb-1">📌 學生範例 C（著作權與公益調和）</div>
+              <p>就像房屋有「騎樓」讓路人避雨通行，著作權也有「合理使用」讓學校教學與研究不必事事付費，兩者都是私有財產與公益的平衡！</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       🎯 學生學習任務與闖關評量（5題統整測驗 + 學習歷程單匯出）
+  ====================================================================== -->
+  <section id="mission-arena" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+    <div class="bg-white rounded-3xl shadow-xl border-2 border-emerald-300 overflow-hidden">
+      <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-black uppercase">🎯 終極總結任務與學習單匯出</span>
+            <h2 class="text-2xl sm:text-3xl font-black mt-1">民法物權大考實戰闖關 ＆ 數位學習歷程單</h2>
+            <p class="text-emerald-100 text-sm mt-1">完成 5 題課本核心素養題與思辨總結，即可一鍵複製或列印你的個人學習紀錄</p>
+          </div>
+          <div class="bg-white/15 px-4 py-2.5 rounded-2xl border border-white/20 text-right">
+            <div class="text-xs text-emerald-100">闖關得分</div>
+            <div id="quizTotalScoreText" class="text-2xl font-black">尚未作答</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-8">
+        <!-- 5 題單選闖關測驗 -->
+        <div id="quizContainer" class="space-y-5">
+          <!-- JS 動態渲染 5 道精選題目 -->
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+          <button onclick="submitFinalQuiz()" class="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base shadow-lg transition">
+            ✅ 提交試卷並查看詳解
+          </button>
+          <button onclick="resetFinalQuiz()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition">
+            🔄 重新作答
+          </button>
+        </div>
+
+        <!-- 學生數位學習單與一鍵複製匯出區 -->
+        <div class="bg-gradient-to-br from-slate-50 to-emerald-50/50 rounded-3xl p-6 border-2 border-emerald-200">
+          <h3 class="text-xl font-black text-slate-900 mb-2">📝 學生個人學習任務單（可一鍵複製繳交至 Google Classroom / 學習歷程）</h3>
+          <p class="text-xs sm:text-sm text-slate-600 mb-4">請填寫你的班級、座號、姓名與課本思辨總結，系統將自動整合你在本網頁的互動成果：</p>
+
+          <div class="grid sm:grid-cols-3 gap-3 mb-4">
+            <input id="stuClass" type="text" placeholder="班級（例：高一 2 班）" class="px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-bold bg-white">
+            <input id="stuNo" type="text" placeholder="座號（例：15 號）" class="px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-bold bg-white">
+            <input id="stuName" type="text" placeholder="姓名（例：王小明）" class="px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-bold bg-white">
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-xs sm:text-sm font-black text-slate-800 mb-1.5">
+              ✍️ 課後思辨總結（請結合課本 P.110 養豬場廢水、P.114 不動產登記，或 P.115 騎樓與智慧財產權，寫下 50~100 字學習心得）：
+            </label>
+            <textarea id="stuReflection" rows="3" placeholder="例如：今天學到民法所有權雖然具有直接支配性、保護絕對性、排他性與優先性，但並非毫無限制。像是買房子必須到地政事務所辦理登記才生效，而一樓騎樓也必須保留給行人通行，展現私有財產與公共利益的調和..." class="w-full p-3.5 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400"></textarea>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button onclick="copyLearningReport()" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-sm shadow transition">
+              📋 一鍵複製學習紀錄摘要
+            </button>
+            <button onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 font-black text-sm transition">
+              🖨️ 列印／另存 PDF 學習單
+            </button>
+            <span id="copyToastMsg" class="hidden text-sm font-black text-emerald-700 bg-emerald-100 px-3 py-1.5 rounded-xl">
+              ✨ 已成功複製到剪貼簿！可直接貼上繳交作業。
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="bg-slate-900 text-slate-400 py-8 text-center text-xs sm:text-sm border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="font-bold text-slate-200">🏝️ 公民與社會 2｜第5章 權利關係與財產權保障・第二節 所有權的物權特性（P.109 - P.115）</p>
+      <p class="mt-1">互動式立體知識島教材｜完整對應課本內文、小辭典、圖 5-2-1 ~ 圖 5-2-4 及公民論壇</p>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       JavaScript 互動邏輯引擎
+  ====================================================================== -->
+  <script>
+    // 狀態管理
+    const appState = {
+      roleMode: 'student', // 'student' | 'teacher'
+      currentIsland: 1,
+      visitedIslands: new Set([1]),
+      classifyCorrect: new Set(),
+      defenseCorrect: new Set(),
+      videoChecks: 0,
+      quizSubmitted: false,
+      quizScore: 0,
+      // 第四島邏輯電路狀態
+      circuitType: 'real_estate', // 'real_estate' | 'movable'
+      switches: {
+        contract: true,
+        handover: false,
+        register: false
+      },
+      // 投票所數據
+      polls: {
+        1: { A: 14, B: 6 },
+        2: { A: 10, B: 12 }
+      }
+    };
+
+    // 1. 師生模式切換
+    function setRoleMode(mode) {
+      appState.roleMode = mode;
+      const btnStudent = document.getElementById('btnStudentMode');
+      const btnTeacher = document.getElementById('btnTeacherMode');
+      const banner = document.getElementById('teacherGlobalBanner');
+      const teacherBoxes = document.querySelectorAll('.teacher-only-box');
+
+      if (mode === 'teacher') {
+        btnTeacher.className = 'px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-amber-500 text-white shadow';
+        btnStudent.className = 'px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-slate-600 hover:text-slate-900';
+        banner.classList.remove('hidden');
+        teacherBoxes.forEach(el => el.classList.remove('hidden'));
+      } else {
+        btnStudent.className = 'px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-sky-600 text-white shadow';
+        btnTeacher.className = 'px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-slate-600 hover:text-slate-900';
+        banner.classList.add('hidden');
+        teacherBoxes.forEach(el => el.classList.add('hidden'));
+      }
+    }
+
+    // 教師一鍵解鎖所有島嶼與詳解
+    function unlockAllProgress() {
+      [1, 2, 3, 4, 5].forEach(i => appState.visitedIslands.add(i));
+      [0, 1, 2, 3, 4, 5].forEach(i => appState.classifyCorrect.add(i));
+      [0, 1, 2, 3].forEach(i => appState.defenseCorrect.add(i));
+      appState.videoChecks = 5;
+      document.querySelectorAll('.video-check').forEach(chk => chk.checked = true);
+      document.getElementById('videoCheckCount').textContent = '5 / 5 已掌握';
+      document.getElementById('think-ans-1').classList.remove('hidden');
+      document.getElementById('think-ans-2').classList.remove('hidden');
+      updateIslandUI();
+      updateGlobalProgress();
+    }
+
+    // 2. 島嶼切換邏輯
+    const islandNames = {
+      1: '第一島（P.109-110 財產權與物之起源）',
+      2: '第二島（P.111-112 四大特性與優先性）',
+      3: '第三島（P.113 民法第767條防衛堡壘）',
+      4: '第四島（P.114 所有權限制與移轉法則）',
+      5: '第五島（P.115 公共利益調和與開放原始碼）'
+    };
+
+    function selectIsland(num) {
+      appState.currentIsland = num;
+      appState.visitedIslands.add(num);
+      updateIslandUI();
+      updateGlobalProgress();
+      document.getElementById('island-content-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function prevIsland() {
+      const target = appState.currentIsland > 1 ? appState.currentIsland - 1 : 5;
+      selectIsland(target);
+    }
+
+    function nextIsland() {
+      const target = appState.currentIsland < 5 ? appState.currentIsland + 1 : 1;
+      selectIsland(target);
+    }
+
+    function updateIslandUI() {
+      const num = appState.currentIsland;
+      document.getElementById('currentIslandBadge').textContent = `📍 目前所在：${islandNames[num]}`;
+      document.getElementById('islandPagerText').textContent = `第 ${num} / 5 島`;
+
+      for (let i = 1; i <= 5; i++) {
+        // 面板顯示隱藏
+        const panel = document.getElementById(`island-panel-${i}`);
+        if (i === num) {
+          panel.classList.remove('hidden');
+        } else {
+          panel.classList.add('hidden');
+        }
+
+        // SVG 地圖光圈高亮
+        const ring = document.getElementById(`map-ring-${i}`);
+        if (ring) {
+          if (i === num) ring.classList.add('active-island-ring');
+          else ring.classList.remove('active-island-ring');
+        }
+
+        // 卡片狀態更新
+        const cardBtn = document.getElementById(`card-btn-${i}`);
+        const checkSpan = document.getElementById(`check-island-${i}`);
+        if (i === num) {
+          cardBtn.className = 'p-3 rounded-2xl border-2 border-amber-500 bg-amber-50/90 text-left transition shadow-md';
+          checkSpan.textContent = '📍 探索中';
+          checkSpan.className = 'text-amber-700 font-black text-sm';
+        } else if (appState.visitedIslands.has(i)) {
+          cardBtn.className = 'p-3 rounded-2xl border-2 border-emerald-400 bg-emerald-50/60 text-left transition hover:shadow-md';
+          checkSpan.textContent = '✓ 已探索';
+          checkSpan.className = 'text-emerald-700 font-bold text-sm';
+        } else {
+          cardBtn.className = 'p-3 rounded-2xl border-2 border-white bg-white/80 text-left transition hover:shadow-md';
+          checkSpan.textContent = '○ 待探索';
+          checkSpan.className = 'text-slate-400 font-bold text-sm';
+        }
+      }
+    }
+
+    // 3. 計算全局探索進度 (0% ~ 100%)
+    function updateGlobalProgress() {
+      // 5 座島嶼 (35%) + 第一島6題分類 (24%) + 第三島4題防衛 (16%) + 影音檢核5項 (10%) + 終極測驗 (15%)
+      const islandPt = (appState.visitedIslands.size / 5) * 35;
+      const classifyPt = (appState.classifyCorrect.size / 6) * 24;
+      const defensePt = (appState.defenseCorrect.size / 4) * 16;
+      const videoPt = (appState.videoChecks / 5) * 10;
+      const quizPt = appState.quizSubmitted ? 15 : 0;
+
+      const total = Math.min(100, Math.round(islandPt + classifyPt + defensePt + videoPt + quizPt));
+      document.getElementById('globalProgressBar').style.width = `${total}%`;
+      document.getElementById('globalProgressText').textContent = `${total}%`;
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function toggleElement(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('hidden');
+    }
+
+    // =====================================================================
+    // 第一島互動 1：圖 5-2-1 養豬場排放廢水情境模擬器
+    // =====================================================================
+    function switchRiverMode(mode) {
+      const btnUnowned = document.getElementById('btnRiverUnowned');
+      const btnManaged = document.getElementById('btnRiverManaged');
+      const svgBox = document.getElementById('riverSvgContainer');
+      const descBox = document.getElementById('riverDescBox');
+
+      if (mode === 'unowned') {
+        btnUnowned.className = 'px-3 py-1 rounded-lg text-xs font-black bg-rose-600 text-white shadow';
+        btnManaged.className = 'px-3 py-1 rounded-lg text-xs font-black bg-slate-100 text-slate-700 hover:bg-emerald-100';
+        svgBox.innerHTML = `
+          <svg viewBox="0 0 460 190" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+            <rect width="460" height="190" fill="#ecfccb"/>
+            <!-- 養豬場與排汙管 -->
+            <rect x="20" y="25" width="115" height="60" rx="6" fill="#fca5a5" stroke="#991b1b" stroke-width="2.5"/>
+            <text x="77" y="52" text-anchor="middle" font-size="13" font-weight="900" fill="#7f1d1d">🐖 養豬場</text>
+            <text x="77" y="70" text-anchor="middle" font-size="10" fill="#991b1b">私利排放廢水</text>
+            <!-- 排汙黑管 -->
+            <rect x="135" y="62" width="45" height="14" fill="#475569"/>
+            <!-- 混濁墨綠色汙染河川 -->
+            <path d="M 0 110 Q 150 95 280 115 T 460 105 L 460 190 L 0 190 Z" fill="#65735b"/>
+            <circle cx="195" cy="125" r="14" fill="#3f4d36" opacity="0.7"/>
+            <circle cx="255" cy="145" r="20" fill="#3f4d36" opacity="0.7"/>
+            <text x="230" y="165" text-anchor="middle" font-size="14" font-weight="900" fill="#fef08a">🤢 河川為無主物 ➔ 廢水肆意排放造成環境公害</text>
+            <!-- 岸邊無奈的民眾 -->
+            <circle cx="370" cy="52" r="14" fill="#fde68a" stroke="#1e293b" stroke-width="2"/>
+            <rect x="355" y="68" width="30" height="38" rx="6" fill="#3b82f6" stroke="#1e293b" stroke-width="2"/>
+            <line x1="355" y1="78" x2="325" y2="95" stroke="#fde68a" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        `;
+        descBox.className = 'mt-3 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs sm:text-sm text-rose-950 font-medium';
+        descBox.innerHTML = '<strong>⚠️ 圖5-2-1 養豬場排放的廢水（無主物困境）：</strong>若自然資源屬於無主物，當有人因為私利而排放廢水進而汙染河川生態時，全體人民只能被迫接受環境公害，導致社會無法有效率地運作。';
+      } else {
+        btnManaged.className = 'px-3 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white shadow';
+        btnUnowned.className = 'px-3 py-1 rounded-lg text-xs font-black bg-slate-100 text-slate-700 hover:bg-rose-100';
+        svgBox.innerHTML = `
+          <svg viewBox="0 0 460 190" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+            <rect width="460" height="190" fill="#f0fdf4"/>
+            <!-- 養豬場加裝汙水處理設備 -->
+            <rect x="20" y="25" width="125" height="60" rx="6" fill="#bbf7d0" stroke="#166534" stroke-width="2.5"/>
+            <text x="82" y="50" text-anchor="middle" font-size="12" font-weight="900" fill="#14532d">🐖 養豬場＋汙水處理</text>
+            <text x="82" y="68" text-anchor="middle" font-size="10" fill="#166534">依法規範・防止外部成本</text>
+            <!-- 政府管理標誌 -->
+            <rect x="175" y="22" width="155" height="58" rx="10" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
+            <text x="252" y="45" text-anchor="middle" font-size="12" font-weight="900" fill="#0369a1">🏛️ 社會契約論：政府財產</text>
+            <text x="252" y="65" text-anchor="middle" font-size="10" font-weight="700" fill="#0f172a">支配管理河川・供人民日常使用</text>
+            <!-- 清澈湛藍河川 -->
+            <path d="M 0 110 Q 150 95 280 115 T 460 105 L 460 190 L 0 190 Z" fill="#38bdf8"/>
+            <text x="230" y="158" text-anchor="middle" font-size="14" font-weight="900" fill="#ffffff">🐟 產權界定清楚 ＋ 法律規範管理 ＝ 全體利益極大化</text>
+          </svg>
+        `;
+        descBox.className = 'mt-3 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs sm:text-sm text-emerald-950 font-medium';
+        descBox.innerHTML = '<strong>✅ 社會契約論與政府管理（P.110）：</strong>人民讓渡部分權利追求全體利益極大化，自然資源歸於政府的財產，政府具支配、管理河川的權力，透過法律規範防止環境公害對多數人民造成負面影響，或透過協商加以處理。';
+      }
+    }
+
+    // 第一島互動 2：動產 vs 不動產 分類器
+    const classifyItems = [
+      { id: 0, title: '🐕 家中飼養的柴犬（寵物）', ans: 'movable', explain: '課本 P.109 小辭典：從法律的觀點，寵物也是「物」，屬於「動產」的一種！' },
+      { id: 1, title: '🏠 附著於土地上的獨棟房屋', ans: 'real_estate', explain: '課本 P.109 小辭典：不動產指土地及附著在土地上之定著物（例如：房子）。' },
+      { id: 2, title: '📱 小辰買賣的筆記型電腦與手機', ans: 'movable', explain: '動產是不動產以外的東西，筆電與手機皆屬「動產」，移轉所有權以「交付」為要件。' },
+      { id: 3, title: '🌾 位於臺南市的農地一筆', ans: 'real_estate', explain: '土地本身即為最典型的「不動產」，移轉所有權必須至地政機關辦理「登記」。' },
+      { id: 4, title: '🛵 停在騎樓下的普通重型機車', ans: 'movable', explain: '課本 P.109 小辭典明確列出「汽機車」屬於不動產以外的「動產」！' },
+      { id: 5, title: '👕 百貨公司購買的外套與衣服', ans: 'movable', explain: '衣服屬於不動產以外之物，在民法上為「動產」。' }
+    ];
+
+    function renderClassifyCards() {
+      const container = document.getElementById('classifyCardsContainer');
+      container.innerHTML = classifyItems.map(item => `
+        <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700 flex flex-col justify-between">
+          <div>
+            <div class="font-black text-base text-white mb-3">${item.title}</div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="answerClassify(${item.id}, 'real_estate')" class="py-2 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/40 border border-amber-400/40 text-amber-200 text-xs font-black transition">
+                🏠 不動產
+              </button>
+              <button onclick="answerClassify(${item.id}, 'movable')" class="py-2 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-500/40 border border-sky-400/40 text-sky-200 text-xs font-black transition">
+                📱 動產
+              </button>
+            </div>
+          </div>
+          <div id="classify-feedback-${item.id}" class="hidden mt-3 p-2.5 rounded-xl text-xs"></div>
+        </div>
+      `).join('');
+    }
+
+    function answerClassify(id, choice) {
+      const item = classifyItems.find(x => x.id === id);
+      const fb = document.getElementById(`classify-feedback-${id}`);
+      fb.classList.remove('hidden');
+
+      if (choice === item.ans) {
+        appState.classifyCorrect.add(id);
+        fb.className = 'mt-3 p-2.5 rounded-xl text-xs bg-emerald-950/90 border border-emerald-500/50 text-emerald-200';
+        fb.innerHTML = `<strong>✅ 答對了！</strong> ${item.explain}`;
+      } else {
+        fb.className = 'mt-3 p-2.5 rounded-xl text-xs bg-rose-950/90 border border-rose-500/50 text-rose-200';
+        fb.innerHTML = `<strong>❌ 再想一下！</strong> ${item.explain}`;
+      }
+      document.getElementById('classifyScore').textContent = `${appState.classifyCorrect.size} / 6`;
+      updateGlobalProgress();
+    }
+
+    // =====================================================================
+    // 第二島互動：圖 5-2-3 優先性（一物二賣）三幕劇場
+    // =====================================================================
+    function setPriorityStage(stage) {
+      [1, 2, 3].forEach(s => {
+        const btn = document.getElementById(`btnStage${s}`);
+        if (s === stage) {
+          btn.className = 'p-3.5 rounded-2xl font-black text-sm sm:text-base transition border-2 border-amber-600 bg-amber-500 text-white shadow-md';
+        } else {
+          btn.className = 'p-3.5 rounded-2xl font-black text-sm sm:text-base transition border-2 border-amber-200 bg-white text-slate-700 hover:bg-amber-100';
+        }
+      });
+
+      const svgBox = document.getElementById('priorityComicSvgBox');
+      const analysisBox = document.getElementById('priorityAnalysisBox');
+
+      if (stage === 1) {
+        svgBox.innerHTML = `
+          <svg viewBox="0 0 400 220" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="220" rx="16" fill="#fffbeb"/>
+            <!-- 手機對話框 -->
+            <rect x="135" y="15" width="190" height="190" rx="20" fill="#ffffff" stroke="#334155" stroke-width="4"/>
+            <!-- 元元訊息 -->
+            <rect x="85" y="42" width="195" height="52" rx="12" fill="#fed7aa" stroke="#9a3412" stroke-width="2"/>
+            <circle cx="108" cy="68" r="14" fill="#d97706"/>
+            <text x="108" y="73" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">元</text>
+            <text x="195" y="64" text-anchor="middle" font-size="13" font-weight="900" fill="#431407">$5000元把電腦</text>
+            <text x="195" y="82" text-anchor="middle" font-size="13" font-weight="900" fill="#431407">賣給我好嗎？</text>
+            <!-- 小辰訊息 -->
+            <rect x="145" y="115" width="195" height="46" rx="12" fill="#dcfce7" stroke="#15803d" stroke-width="2"/>
+            <text x="225" y="143" text-anchor="middle" font-size="14" font-weight="900" fill="#14532d">好呀！沒問題～</text>
+            <circle cx="315" cy="138" r="14" fill="#16a34a"/>
+            <text x="315" y="143" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">辰</text>
+            <!-- 元元拿手機 -->
+            <circle cx="48" cy="118" r="18" fill="#fde68a" stroke="#1e293b" stroke-width="2.5"/>
+            <rect x="28" y="138" width="42" height="65" rx="8" fill="#fbbf24" stroke="#1e293b" stroke-width="2.5"/>
+          </svg>
+        `;
+        analysisBox.innerHTML = `
+          <div class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-black">第一幕法律關係解析</div>
+          <h5 class="text-xl font-black text-slate-900">小辰與元元成立「買賣契約（債權）」</h5>
+          <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+            小辰原本與元元透過手機約定要以 <strong>5,000 元</strong>的價格把電腦賣給元元。此時雙方意思表示合致，<strong>買賣契約已經合法成立</strong>！
+          </p>
+          <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-amber-950">
+            ⚠️ <strong>關鍵盲點：</strong>此時小辰還沒有把電腦「交付」給元元，所以元元只享有請求小辰交出電腦的<strong>「債權（相對權）」</strong>，還<strong>沒有取得電腦的「所有權（物權）」</strong>！
+          </div>
+        `;
+      } else if (stage === 2) {
+        svgBox.innerHTML = `
+          <svg viewBox="0 0 400 220" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="220" rx="16" fill="#ecfdf5"/>
+            <!-- 阿庭出價對話框 -->
+            <rect x="85" y="15" width="215" height="54" rx="12" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+            <text x="175" y="38" text-anchor="middle" font-size="14" font-weight="900" fill="#0f172a">我出 $6000元</text>
+            <text x="175" y="58" text-anchor="middle" font-size="14" font-weight="900" fill="#0f172a">向你買電腦！</text>
+            <circle cx="272" cy="42" r="15" fill="#475569"/>
+            <text x="272" y="47" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">庭</text>
+            <!-- 小辰把筆電交付給阿庭 -->
+            <circle cx="115" cy="105" r="18" fill="#fde68a" stroke="#1e293b" stroke-width="2.5"/>
+            <rect x="92" y="125" width="46" height="75" rx="8" fill="#4ade80" stroke="#1e293b" stroke-width="2.5"/>
+            <!-- 筆電移轉 -->
+            <rect x="148" y="132" width="55" height="36" rx="4" fill="#f8fafc" stroke="#1e293b" stroke-width="2.5"/>
+            <text x="175" y="122" text-anchor="middle" font-size="12" font-weight="900" fill="#059669">銀貨兩訖「交付」➔</text>
+            <!-- 阿庭拿鈔票 -->
+            <circle cx="265" cy="105" r="18" fill="#fde68a" stroke="#1e293b" stroke-width="2.5"/>
+            <rect x="242" y="125" width="46" height="75" rx="8" fill="#fde047" stroke="#1e293b" stroke-width="2.5"/>
+            <rect x="212" y="96" width="24" height="38" rx="3" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+            <text x="224" y="120" text-anchor="middle" font-size="14" font-weight="900" fill="#15803d">$</text>
+          </svg>
+        `;
+        analysisBox.innerHTML = `
+          <div class="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-black">第二幕法律關係解析</div>
+          <h5 class="text-xl font-black text-slate-900">小辰將電腦「交付」給阿庭 ➔ 阿庭取得物權！</h5>
+          <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+            小辰中途反悔，將電腦賣給出價 <strong>6,000 元</strong>的阿庭，並且<strong>將電腦實際「交付」給阿庭</strong>（民法§761 動產交付移轉所有權）。
+          </p>
+          <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs sm:text-sm text-emerald-950">
+            👑 <strong>關鍵轉折：</strong>一旦完成「交付」，<strong>阿庭就正式享有對這臺電腦的「所有權（物權）」</strong>！
+          </div>
+        `;
+      } else {
+        svgBox.innerHTML = `
+          <svg viewBox="0 0 400 220" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="220" rx="16" fill="#fff1f2"/>
+            <!-- 元元抗議對話框 -->
+            <rect x="135" y="15" width="240" height="54" rx="12" fill="#fed7aa" stroke="#9a3412" stroke-width="2"/>
+            <circle cx="160" cy="42" r="14" fill="#d97706"/>
+            <text x="160" y="47" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">元</text>
+            <text x="268" y="38" text-anchor="middle" font-size="13" font-weight="900" fill="#431407">你明明是先答應</text>
+            <text x="268" y="58" text-anchor="middle" font-size="13" font-weight="900" fill="#431407">賣給我的！</text>
+            <!-- 小辰尷尬 vs 元元生氣指責 -->
+            <circle cx="120" cy="105" r="18" fill="#fde68a" stroke="#1e293b" stroke-width="2.5"/>
+            <rect x="95" y="125" width="50" height="75" rx="8" fill="#4ade80" stroke="#1e293b" stroke-width="2.5"/>
+            <circle cx="235" cy="108" r="18" fill="#fde68a" stroke="#1e293b" stroke-width="2.5"/>
+            <rect x="210" y="128" width="52" height="72" rx="8" fill="#fbbf24" stroke="#1e293b" stroke-width="2.5"/>
+            <line x1="210" y1="140" x2="155" y2="130" stroke="#fbbf24" stroke-width="10" stroke-linecap="round"/>
+          </svg>
+        `;
+        analysisBox.innerHTML = `
+          <div class="inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-900 text-xs font-black">第三幕法律最終判定</div>
+          <h5 class="text-xl font-black text-slate-900">所有權優先於債權：元元不得主張電腦所有權！</h5>
+          <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+            <strong>阿庭享有對電腦的物權，優先於元元的債權</strong>。元元<strong>不得</strong>主張比阿庭先成立買賣契約，而認為阿庭無電腦所有權。
+          </p>
+          <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs sm:text-sm text-rose-950">
+            ⚖️ <strong>元元該怎麼辦？</strong>由於買賣契約是債權契約，只有「相對效力」，元元不能向阿庭討電腦，但可向違約的小辰請求<strong>債務不履行之損害賠償</strong>！
+          </div>
+        `;
+      }
+    }
+
+    // =====================================================================
+    // 第三島互動：民法第 767 條防衛模擬器
+    // =====================================================================
+    const defenseCases = [
+      {
+        id: 0,
+        title: '案例 1：筆電借期屆滿卻遭霸占不還',
+        desc: '小辰把筆電借給同學使用一週，期限到了同學卻賴皮不還，小辰怒喊：「把電腦還給我！」',
+        ans: 'return',
+        explain: '對方無權占有小辰的所有物，應依民法§767主張「所有物返還請求權」。'
+      },
+      {
+        id: 1,
+        title: '案例 2：惡鄰居將大型廢棄物堆在你家車庫正門口',
+        desc: '鄰居雖然沒有霸占你的車庫，但把廢棄家具堆在車庫門口，害你的車子完全無法開出門使用。',
+        ans: 'remove',
+        explain: '雖未占有所有物，但行為「已妨害所有權行使」，應主張「妨害除去請求權」要求移走障礙物！'
+      },
+      {
+        id: 2,
+        title: '案例 3：隔壁工地老舊圍牆嚴重傾斜，隨時可能倒塌壓毀你家屋頂',
+        desc: '圍牆還沒真的垮下來壓壞房子，但已經出現明顯裂縫與傾斜，有極高危險性！',
+        ans: 'prevent',
+        explain: '對於「有妨害所有權之虞」的情況，可預先主張「妨害防止請求權」要求對方加固或拆除危牆。'
+      },
+      {
+        id: 3,
+        title: '案例 4：借用電腦前預先要求不得擅自更改系統設定',
+        desc: '如課本圖 5-2-4 右圖，小辰為避免電腦系統被搞壞，預先要求借用人不得從事更改設定之行為。',
+        ans: 'prevent',
+        explain: '課本 P.113 圖 5-2-4：對於可能會妨害所有權行使的行為，預先要求不得從事，屬於「妨害防止請求權」。'
+      }
+    ];
+
+    function renderDefenseCases() {
+      const container = document.getElementById('defenseCasesContainer');
+      container.innerHTML = defenseCases.map(c => `
+        <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 flex flex-col justify-between">
+          <div>
+            <div class="font-black text-base text-rose-300 mb-1">${c.title}</div>
+            <p class="text-xs sm:text-sm text-slate-300 mb-4">${c.desc}</p>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="answerDefense(${c.id}, 'return')" class="py-2 px-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/40 border border-rose-400/40 text-rose-200 text-xs font-black transition">
+                1. 返還請求權
+              </button>
+              <button onclick="answerDefense(${c.id}, 'remove')" class="py-2 px-2 rounded-xl bg-orange-500/20 hover:bg-orange-500/40 border border-orange-400/40 text-orange-200 text-xs font-black transition">
+                2. 妨害除去
+              </button>
+              <button onclick="answerDefense(${c.id}, 'prevent')" class="py-2 px-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-400/40 text-emerald-200 text-xs font-black transition">
+                3. 妨害防止
+              </button>
+            </div>
+          </div>
+          <div id="defense-feedback-${c.id}" class="hidden mt-3 p-3 rounded-xl text-xs"></div>
+        </div>
+      `).join('');
+    }
+
+    function answerDefense(id, choice) {
+      const item = defenseCases.find(x => x.id === id);
+      const fb = document.getElementById(`defense-feedback-${id}`);
+      fb.classList.remove('hidden');
+
+      if (choice === item.ans) {
+        appState.defenseCorrect.add(id);
+        fb.className = 'mt-3 p-3 rounded-xl text-xs bg-emerald-950/90 border border-emerald-500/50 text-emerald-200';
+        fb.innerHTML = `<strong>🛡️ 防衛成功！</strong> ${item.explain}`;
+      } else {
+        fb.className = 'mt-3 p-3 rounded-xl text-xs bg-rose-950/90 border border-rose-500/50 text-rose-200';
+        fb.innerHTML = `<strong>⚠️ 武器選錯囉！</strong> ${item.explain}`;
+      }
+      document.getElementById('defenseScore').textContent = `${appState.defenseCorrect.size} / 4`;
+      updateGlobalProgress();
+    }
+
+    // =====================================================================
+    // 第四島互動：所有權移轉「雙開關邏輯電路」模擬器 (P.114)
+    // =====================================================================
+    function setCircuitType(type) {
+      appState.circuitType = type;
+      const btnRE = document.getElementById('btnCircuitRealEstate');
+      const btnMov = document.getElementById('btnCircuitMovable');
+      const swReg = document.getElementById('swRegister');
+      const swHandTitle = document.getElementById('swHandoverTitle');
+      const swHandDesc = document.getElementById('swHandoverDesc');
+
+      if (type === 'real_estate') {
+        btnRE.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-black bg-indigo-600 text-white shadow';
+        btnMov.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-black text-slate-300 hover:text-white';
+        swReg.classList.remove('opacity-40', 'pointer-events-none');
+        swHandTitle.textContent = '🔑 交付房屋鑰匙（交屋占有）';
+        swHandDesc.textContent = '對不動產而言，僅交屋鑰匙不等於登記！';
+      } else {
+        btnMov.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-black bg-cyan-600 text-white shadow';
+        btnRE.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-black text-slate-300 hover:text-white';
+        swReg.classList.add('opacity-40', 'pointer-events-none');
+        swHandTitle.textContent = '🤝 動產交付（手機交到買方手中）';
+        swHandDesc.textContent = '民法§761：動產物權之讓與，以「交付」為生效要件！';
+      }
+      renderCircuitDiagram();
+    }
+
+    function toggleCircuitSwitch(key) {
+      appState.switches[key] = !appState.switches[key];
+      renderCircuitDiagram();
+    }
+
+    function renderCircuitDiagram() {
+      const { contract, handover, register } = appState.switches;
+      const isRE = appState.circuitType === 'real_estate';
+
+      // 更新三顆按鈕外觀
+      const updateBtnStyle = (id, statusId, isOn, onLabel, offLabel) => {
+        const btn = document.getElementById(id);
+        const st = document.getElementById(statusId);
+        if (isOn) {
+          btn.className = 'p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-950/60 text-left transition';
+          st.className = 'px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 text-xs font-black';
+          st.textContent = onLabel;
+        } else {
+          btn.className = 'p-4 rounded-2xl border-2 border-slate-600 bg-slate-800/70 text-left transition';
+          st.className = 'px-2.5 py-0.5 rounded-full bg-slate-600 text-slate-200 text-xs font-black';
+          st.textContent = offLabel;
+        }
+      };
+
+      updateBtnStyle('swContract', 'swContractStatus', contract, 'ON 已簽約', 'OFF 未簽約');
+      updateBtnStyle('swHandover', 'swHandoverStatus', handover, 'ON 已交付', 'OFF 未交付');
+      updateBtnStyle('swRegister', 'swRegisterStatus', register, 'ON 已登記', 'OFF 未登記');
+
+      // 判斷所有權是否移轉成功
+      const ownershipTransferred = isRE ? (contract && register) : (contract && handover);
+      const wire1Color = contract ? '#10b981' : '#475569';
+      const wire2Active = isRE ? register : handover;
+      const wire2Color = (contract && wire2Active) ? '#10b981' : '#475569';
+
+      const svgBox = document.getElementById('circuitSvgBox');
+      svgBox.innerHTML = `
+        <svg viewBox="0 0 820 145" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+          <!-- 電源起點：原所有權人 -->
+          <rect x="15" y="35" width="145" height="75" rx="14" fill="#1e293b" stroke="#64748b" stroke-width="2.5"/>
+          <text x="87" y="65" text-anchor="middle" font-size="13" font-weight="900" fill="#f8fafc">${isRE ? '🏠 賣方：陳太太' : '📱 賣方：手機店主'}</text>
+          <text x="87" y="88" text-anchor="middle" font-size="11" fill="#94a3b8">原所有權人</text>
+
+          <!-- 第一段導線 -->
+          <line x1="160" y1="72" x2="245" y2="72" stroke="${wire1Color}" stroke-width="5" class="${contract ? 'circuit-active' : ''}"/>
+
+          <!-- 節點 1：簽訂買賣契約 -->
+          <rect x="245" y="30" width="160" height="85" rx="14" fill="${contract ? '#064e3b' : '#0f172a'}" stroke="${wire1Color}" stroke-width="3"/>
+          <text x="325" y="58" text-anchor="middle" font-size="12" font-weight="900" fill="#ffffff">步驟1：債權契約</text>
+          <text x="325" y="78" text-anchor="middle" font-size="13" font-weight="900" fill="${contract ? '#34d399' : '#f87171'}">${contract ? '✓ 已簽訂買賣契約' : '✕ 尚未簽約'}</text>
+          <text x="325" y="98" text-anchor="middle" font-size="10" fill="#cbd5e1">(僅產生債權相對效力)</text>
+
+          <!-- 第二段導線 -->
+          <line x1="405" y1="72" x2="485" y2="72" stroke="${wire2Color}" stroke-width="5" class="${ownershipTransferred ? 'circuit-active' : ''}"/>
+
+          <!-- 節點 2：公示生效要件（登記 vs 交付） -->
+          <rect x="485" y="30" width="175" height="85" rx="14" fill="${wire2Active ? '#064e3b' : '#0f172a'}" stroke="${wire2Active ? '#10b981' : '#f59e0b'}" stroke-width="3"/>
+          <text x="572" y="55" text-anchor="middle" font-size="12" font-weight="900" fill="#fde047">${isRE ? '步驟2：民法§758 登記生效' : '步驟2：民法§761 交付生效'}</text>
+          <text x="572" y="77" text-anchor="middle" font-size="13" font-weight="900" fill="${wire2Active ? '#34d399' : '#fbbf24'}">
+            ${isRE ? (register ? '✓ 地政事務所已登記' : '✕ 尚未辦理移轉登記') : (handover ? '✓ 已將手機交付買方' : '✕ 尚未交付手機')}
+          </text>
+          <text x="572" y="98" text-anchor="middle" font-size="10" fill="#cbd5e1">${isRE ? '(不動產物權公示方法)' : '(動產物權公示方法)'}</text>
+
+          <!-- 第三段導線 -->
+          <line x1="660" y1="72" x2="705" y2="72" stroke="${wire2Color}" stroke-width="5" class="${ownershipTransferred ? 'circuit-active' : ''}"/>
+
+          <!-- 終點燈泡：買方是否取得所有權 -->
+          <rect x="705" y="25" width="105" height="95" rx="16" fill="${ownershipTransferred ? '#10b981' : '#1e293b'}" stroke="${ownershipTransferred ? '#a7f3d0' : '#475569'}" stroke-width="3"/>
+          <text x="757" y="58" text-anchor="middle" font-size="24">${ownershipTransferred ? '💡' : '🌑'}</text>
+          <text x="757" y="82" text-anchor="middle" font-size="12" font-weight="900" fill="#ffffff">${ownershipTransferred ? '所有權移轉！' : '尚未取得所有權'}</text>
+          <text x="757" y="100" text-anchor="middle" font-size="10" font-weight="700" fill="${ownershipTransferred ? '#064e3b' : '#94a3b8'}">${isRE ? (ownershipTransferred ? '林先生為屋主' : '屋主仍是陳太太') : (ownershipTransferred ? '買方為新主人' : '店主仍是主人')}</text>
+        </svg>
+      `;
+
+      const verdictBox = document.getElementById('circuitVerdictBox');
+      if (isRE) {
+        if (contract && register) {
+          verdictBox.className = 'mt-4 p-4 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 text-sm sm:text-base font-bold text-emerald-200';
+          verdictBox.innerHTML = '🎉 <strong>法律判定（課本 P.114）：林先生正式取得房屋所有權！</strong> 雙方簽訂契約並至地政事務所完成移轉登記，符合《民法》第758條「不動產登記生效要件主義」。';
+        } else if (contract && handover && !register) {
+          verdictBox.className = 'mt-4 p-4 rounded-2xl bg-rose-500/25 border border-rose-400/50 text-sm sm:text-base font-bold text-rose-200';
+          verdictBox.innerHTML = '🚨 <strong>大考常考陷阱觸發！房屋所有權人仍然是「陳太太」！</strong> 雖然已經簽約甚至把房屋鑰匙交給林先生（已交付占有），但不動產採「登記生效主義」，未到地政事務所辦理移轉登記前，所有權尚未移轉！';
+        } else {
+          verdictBox.className = 'mt-4 p-4 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-sm sm:text-base font-bold text-amber-200';
+          verdictBox.innerHTML = '⏳ <strong>法律判定：房屋所有權尚未移轉（屋主仍為陳太太）。</strong> 請同時開啟「S1 簽訂契約」與「S3 地政事務所移轉登記」以完成不動產所有權移轉！';
+        }
+      } else {
+        if (contract && handover) {
+          verdictBox.className = 'mt-4 p-4 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 text-sm sm:text-base font-bold text-emerald-200';
+          verdictBox.innerHTML = '🎉 <strong>法律判定（課本 P.114 小辭典）：買方正式取得手機所有權！</strong> 符合《民法》第761條第1項「動產物權之讓與，非將動產交付，不生效力」（動產交付生效主義）。';
+        } else {
+          verdictBox.className = 'mt-4 p-4 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-sm sm:text-base font-bold text-amber-200';
+          verdictBox.innerHTML = '⏳ <strong>法律判定：手機所有權尚未移轉。</strong> 僅簽訂契約只產生債權效力，必須開啟「S2 動產交付」將手機交給買方，才會正式移轉動產所有權！';
+        }
+      }
+    }
+
+    // =====================================================================
+    // 🎬 影音活化館：切換影片與檢核表
+    // =====================================================================
+    function switchVideo(videoId, title) {
+      const iframe = document.getElementById('youtubePlayer');
+      iframe.src = `https://www.youtube.com/embed/${videoId}`;
+      iframe.title = title;
+    }
+
+    function updateVideoChecklist() {
+      const checks = document.querySelectorAll('.video-check:checked').length;
+      appState.videoChecks = checks;
+      document.getElementById('videoCheckCount').textContent = `${checks} / 5 已掌握`;
+      updateGlobalProgress();
+    }
+
+    // =====================================================================
+    // 📊 師生互動投票所與便利貼牆
+    // =====================================================================
+    function castVote(pollId, option) {
+      appState.polls[pollId][option]++;
+      updatePollUI(pollId);
+    }
+
+    function simulateClassVotes() {
+      appState.polls[1].A += Math.floor(Math.random() * 12) + 18;
+      appState.polls[1].B += Math.floor(Math.random() * 8) + 6;
+      appState.polls[2].A += Math.floor(Math.random() * 10) + 12;
+      appState.polls[2].B += Math.floor(Math.random() * 12) + 14;
+      updatePollUI(1);
+      updatePollUI(2);
+    }
+
+    function updatePollUI(pollId) {
+      const data = appState.polls[pollId];
+      const total = data.A + data.B;
+      const pctA = Math.round((data.A / total) * 100);
+      const pctB = 100 - pctA;
+
+      document.getElementById(`poll${pollId}Total`).textContent = total;
+      document.getElementById(`poll${pollId}TextA`).textContent = `${pctA}% (${data.A}票)`;
+      document.getElementById(`poll${pollId}TextB`).textContent = `${pctB}% (${data.B}票)`;
+      document.getElementById(`poll${pollId}BarA`).style.width = `${pctA}%`;
+      document.getElementById(`poll${pollId}BarB`).style.width = `${pctB}%`;
+    }
+
+    function addOpinionPost() {
+      const authorEl = document.getElementById('opinionAuthor');
+      const textEl = document.getElementById('opinionText');
+      const author = authorEl.value.trim() || '匿名同學';
+      const text = textEl.value.trim();
+      if (!text) return;
+
+      const wall = document.getElementById('opinionWall');
+      const card = document.createElement('div');
+      card.className = 'p-3.5 rounded-xl bg-emerald-100/90 border border-emerald-300 text-xs sm:text-sm text-slate-800 shadow-sm';
+
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'font-black text-emerald-900 mb-1';
+      titleDiv.textContent = `📌 ${author}`;
+
+      const p = document.createElement('p');
+      p.textContent = text;
+
+      card.appendChild(titleDiv);
+      card.appendChild(p);
+      wall.prepend(card);
+
+      textEl.value = '';
+    }
+
+    // =====================================================================
+    // 🎯 終極闖關測驗 (5題) 與學習單匯出
+    // =====================================================================
+    const finalQuizData = [
+      {
+        q: '1.【權利客體與物之分類｜P.109】依據我國民法規定，下列關於「權利主體」與「權利客體（物）」的敘述，何者正確？',
+        options: [
+          'A. 民法上的權利客體僅限於有形的動產與不動產，不包含專利權或著作權',
+          'B. 家中飼養的寵物狗具有生命，因此在現行民法上屬於「權利主體（人）」',
+          'C. 土地及附著於土地上之房屋屬於「不動產」；手機、汽機車與寵物則屬於「動產」',
+          'D. 汽車與機車因為價值較高且須至監理站過戶，故在民法上屬於「不動產」'
+        ],
+        ans: 2,
+        explain: '解析：(A)權利客體亦包括專利權、著作權等精神產物；(B)(C)從民法觀點，寵物也是「物」，屬於「動產」的一種；(D)汽機車屬於不動產以外之物，為「動產」。'
+      },
+      {
+        q: '2.【所有權的優先性與一物二賣｜P.112】小辰與元元先在網路約定以 5,000 元買賣二手筆電，但尚未交貨；隔天阿庭出價 6,000 元，小辰遂將筆電當場「交付」給阿庭。依民法規定，下列分析何者正確？',
+        options: [
+          'A. 元元先與小辰成立買賣契約，依「先來後到原則」，元元可向阿庭要求返還筆電',
+          'B. 阿庭因受領筆電之「交付」而取得所有權（物權），物權優先於元元的債權，故阿庭保有筆電所有權',
+          'C. 債權屬於絕對權、物權屬於相對權，因此元元的買賣契約效力大於阿庭的所有權',
+          'D. 小辰與元元僅用手機訊息約定，未簽訂書面契約，故買賣契約自始無效'
+        ],
+        ans: 1,
+        explain: '解析：動產以「交付」移轉所有權，阿庭已取得筆電物權（絕對權，可對抗不特定人）；而元元僅享有債權（相對權，僅得對小辰主張），所有權優先於債權，故元元不得向阿庭主張筆電所有權。'
+      },
+      {
+        q: '3.【民法第767條物上請求權｜P.113】小華將休旅車停在自家合法的一樓車庫內，不料鄰居老王竟將整排廢棄花盆堆置在小華車庫鐵捲門外，導致小華無法將車開出門。此時小華可依《民法》第767條向老王主張何種權利？',
+        options: [
+          'A. 所有物返還請求權',
+          'B. 妨害除去請求權',
+          'C. 妨害防止請求權',
+          'D. 動產善意取得請求權'
+        ],
+        ans: 1,
+        explain: '解析：老王雖未占有小華的車庫或休旅車，但其堆放花盆的行為「已經妨害」小華行使所有權，故應依民法第767條中段主張「妨害除去請求權」。'
+      },
+      {
+        q: '4.【不動產移轉與物權法定主義｜P.114】陳太太將名下一棟房屋賣給林先生，雙方已簽妥房屋買賣契約，林先生也付清價金並拿到鑰匙搬進去居住，但雙方尚未前往地政事務所辦理所有權移轉登記。請問此時誰擁有該房屋的所有權？',
+        options: [
+          'A. 林先生，因為買賣契約一經簽訂，房屋所有權即自動移轉',
+          'B. 林先生，因為已經拿到房屋鑰匙並實際占有居住（完成交付）',
+          'C. 陳太太，因為我國採「不動產登記生效要件主義」，非經地政機關登記不生所有權移轉效力',
+          'D. 陳太太與林先生各有一半的所有權'
+        ],
+        ans: 2,
+        explain: '解析：依民法第758條第1項「不動產物權行為，非經登記，不生效力」。在前往地政事務所完成移轉登記前，房屋所有權人仍為陳太太。'
+      },
+      {
+        q: '5.【公共利益調和與開放原始碼｜P.115】關於私有財產權保障與公共利益的調和，下列課本所述的觀點何者正確？',
+        options: [
+          'A. 現代民主國家仍維持古羅馬「絕對所有權原則」，國家在任何情況下皆不得限制人民財產權',
+          'B. 臺灣建築常見的「騎樓」空間屬於屋主私有，屋主可自由封閉築牆禁止行人通行',
+          'C. 開放原始碼（Open Source）運動強調資訊的自由流通與共享，以對抗商業公司的壟斷',
+          'D. 《著作權法》僅以保護創作者獲利為唯一目的，完全不允許他人合理使用'
+        ],
+        ans: 2,
+        explain: '解析：(A)憲法第15條雖保障財產權，但為維護公共利益，國家可藉由正當程序加以限制；(B)騎樓須保留空間供行人通行；(D)著作權法第1條兼顧保障著作人權益與調和社會公共利益，並設有合理使用規範。'
+      }
+    ];
+
+    function renderFinalQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = finalQuizData.map((item, idx) => `
+        <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+          <div class="font-black text-slate-900 text-base mb-3">${item.q}</div>
+          <div class="space-y-2">
+            ${item.options.map((opt, oIdx) => `
+              <label class="flex items-start gap-3 p-3 rounded-xl bg-white border border-slate-200 cursor-pointer hover:bg-emerald-50/50 transition">
+                <input type="radio" name="final-quiz-${idx}" value="${oIdx}" class="mt-1 w-4 h-4 accent-emerald-600">
+                <span class="text-sm font-medium text-slate-800">${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+          <div id="quiz-exp-${idx}" class="hidden mt-3 p-3.5 rounded-xl text-xs sm:text-sm"></div>
+        </div>
+      `).join('');
+    }
+
+    function submitFinalQuiz() {
+      let score = 0;
+      finalQuizData.forEach((item, idx) => {
+        const selected = document.querySelector(`input[name="final-quiz-${idx}"]:checked`);
+        const expBox = document.getElementById(`quiz-exp-${idx}`);
+        expBox.classList.remove('hidden');
+
+        if (selected && parseInt(selected.value, 10) === item.ans) {
+          score += 20;
+          expBox.className = 'mt-3 p-3.5 rounded-xl text-xs sm:text-sm bg-emerald-100 border border-emerald-300 text-emerald-950 font-medium';
+          expBox.innerHTML = `<strong>✅ 答對了！（+20分）</strong> ${item.explain}`;
+        } else {
+          expBox.className = 'mt-3 p-3.5 rounded-xl text-xs sm:text-sm bg-rose-100 border border-rose-300 text-rose-950 font-medium';
+          expBox.innerHTML = `<strong>❌ 答錯或未作答！正確答案為選項 ${['A','B','C','D'][item.ans]}。</strong> ${item.explain}`;
+        }
+      });
+
+      appState.quizSubmitted = true;
+      appState.quizScore = score;
+      document.getElementById('quizTotalScoreText').textContent = `${score} / 100 分`;
+      updateGlobalProgress();
+    }
+
+    function resetFinalQuiz() {
+      appState.quizSubmitted = false;
+      appState.quizScore = 0;
+      document.getElementById('quizTotalScoreText').textContent = '尚未作答';
+      renderFinalQuiz();
+      updateGlobalProgress();
+    }
+
+    // 複製學習歷程單摘要（使用相容於 iFrame 的 document.execCommand('copy')）
+    function copyLearningReport() {
+      const stuClass = document.getElementById('stuClass').value.trim() || '未填班級';
+      const stuNo = document.getElementById('stuNo').value.trim() || '未填座號';
+      const stuName = document.getElementById('stuName').value.trim() || '未填姓名';
+      const reflection = document.getElementById('stuReflection').value.trim() || '（尚未填寫心得）';
+      const progress = document.getElementById('globalProgressText').textContent;
+
+      const reportText = [
+        '============================================',
+        '🏝️ 公民與社會 2｜第5章第2節 所有權的物權特性 學習紀錄單',
+        '============================================',
+        `👤 學生資訊：${stuClass} ／ ${stuNo} ／ ${stuName}`,
+        `📊 知識島總探索進度：${progress}`,
+        `🌱 第一島（動產/不動產分類）：${appState.classifyCorrect.size} / 6 題通過`,
+        `🛡️ 第三島（民法§767物上請求權防衛）：${appState.defenseCorrect.size} / 4 題通過`,
+        `🎬 影音活化重點檢核：${appState.videoChecks} / 5 項完成`,
+        `🎯 終極闖關測驗得分：${appState.quizSubmitted ? appState.quizScore + ' / 100 分' : '尚未提交'}`,
+        '--------------------------------------------',
+        '✍️ 課後思辨總結：',
+        reflection,
+        '============================================'
+      ].join('\n');
+
+      const tempArea = document.createElement('textarea');
+      tempArea.value = reportText;
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      try {
+        document.execCommand('copy');
+        const toast = document.getElementById('copyToastMsg');
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 4000);
+      } catch (e) {
+        console.error(e);
+      }
+      document.body.removeChild(tempArea);
+    }
+
+    // 初始化所有互動元件
+    window.onload = function () {
+      switchRiverMode('unowned');
+      renderClassifyCards();
+      setPriorityStage(1);
+      renderDefenseCases();
+      renderCircuitDiagram();
+      renderFinalQuiz();
+      updateIslandUI();
+      updateGlobalProgress();
+    };
+  </script>
+</body>
+</html>
